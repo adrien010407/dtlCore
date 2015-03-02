@@ -1,0 +1,52 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.dandielo</groupId>
+  <artifactId>dtlCore</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  
+  <properties>  
+	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	<craftbukkit.version>1.8-R0.1-SNAPSHOT</craftbukkit.version>
+  </properties>
+  
+  
+	<!-- Repositories -->
+	<repositories>
+	    <repository>
+	        <name>Spigot Repository</name>
+	        <id>spigot-repo</id>
+	        <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots</url>
+	    </repository>
+		<repository>
+			<name>Bukkit repository</name>
+			<id>bukkit-repo</id>
+			<url>http://repo.bukkit.org/content/groups/public</url>
+		</repository>
+		<repository>
+			<name>Citizens2 repository</name>
+			<id>everything</id>
+			<url>http://repo.citizensnpcs.co</url>
+		</repository>
+		<repository>
+			<id>dtl-repo</id>
+			<name>dtl Repo</name>
+			<url>http://repo.dandielo.net:8081/nexus/content/groups/public</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>${craftbukkit.version}</version>
+			<type>jar</type>
+			<scope>provided</scope> 
+		</dependency>
+	</dependencies>
+</project>
