@@ -8,6 +8,7 @@ import java.util.Set;
 import net.dandielo.core.items.serialize.ItemAttribute;
 import net.dandielo.core.items.serialize.ItemFlag;
 import net.dandielo.core.items.serialize.core.Amount;
+import net.dandielo.core.items.serialize.core.Name;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -71,37 +72,88 @@ public class dItem {
 		return is; 
 	}
 	
-	/* Item specific attribute methods */
 	/**
 	 * Returns the items amount.
 	 * @return
-	 *   Amount of the item
+	 *   Amount of the item,
 	 */
 	public int getAmount() { 
 		return getAttribute(Amount.class).getValue(); 
 	}
+	
+	/**
+	 * Sets the items new amount
+	 * @param amount
+	 *   The amount to set.
+	 */
 	public void setAmount(int amount) {
 		getAttribute(Amount.class).setValue(amount);
 	}
 	
+	/**
+	 * Returns the current material of this item.
+	 * @return
+	 *   The items current material.
+	 */
 	public Material getMaterial() { 
 		return material; 
 	}
+	
+	/**
+	 * Sets a new material for the item. 
+	 * <p>This operation may remove attributes that are not compatible with the new material.</p> 
+	 * @param material
+	 *   The new material for the item.
+	 */
 	public void setMaterial(Material material) { 
 		this.material = material; 
 	}
 
 	/**
+	 * Returns the items material ID. 
+	 * <p>This shouldn't be used anymore as it's likely to be removed in the near future.</p>
+	 *  
 	 * @deprecated Magic value
 	 * @return
+	 *   The items Material ID
 	 */
 	public int getTypeId() { 
 		return material.getId(); 
 	} 
+	
+	/**
+	 * Returns the materials additional data value.
+	 * @return
+	 *   The materials data value.
+	 */
 	public int getTypeData() { return data.getData(); } //like wool colors
 	
-	public String getName() { return null; } //returns the items name or material name instead (lower case)
-	public void setName(String name) { } //Sets a custom name for an item
+	/**
+	 * Returns the items custom name
+	 * <p>If no name is set then the material name is used instead.</p>
+	 * 
+	 * @return
+	 *   The items name.
+	 */
+	public String getName() { 
+		return hasAttribute(Name.class) ? getAttribute(Name.class).getValue() 
+				/* else */ : material.name().toLowerCase(); 
+	} 
+	
+	/**
+	 * Sets a new custom name for the item.
+	 * <p>If the name attribute is not preset to set the new custom name, a new attribute will be created automatically.</p>
+	 * <p>Also you should pass a prepared string that already contains the '<b>§</b>' character as 
+	 * the color-code prefix.</p>
+	 * @param name
+	 *   The items new custom name.
+	 */
+	public void setName(String name) { 
+		if (hasAttribute(Name.class))
+			getAttribute(Name.class).setValue(name);
+		else
+			addAttribute(Name.class).setValue(name);
+	}
 	
 	public List<String> getLore() { return null; }
 	public List<String> getDescription() { return null; } //adds stand-alone attribute descriptions
