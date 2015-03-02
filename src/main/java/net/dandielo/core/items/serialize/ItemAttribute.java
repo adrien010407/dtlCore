@@ -18,17 +18,6 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author dandielo
  *
- * This class is a wrapper on the default ItemStack and it's ItemMeta classes, allowing more in-game customization and operations.
- * Each attribute is unique on ONE item, so no item may have 2 of the same attributes, however each attribute may consist of one 
- *   general key and several sub-keys allowing to make classes more flexible.</br>
- * Event what one attribute class does work as several "sub-key" attributes, their hash code is always different.</br></br>
- * 
- * Also keep in mind if you want to create a new attribute you need to create one or two constructors. </br></br>
- * If you are registering an general attribute then you need to add in your class a constructor with these params:</br>
- *   </br>(<strong>dItem, String</strong>)</br></br> and pass them to the super constructor.</br></br>
- * If you want your class to extend any other attribute (with sub-keys) you will need to have the following constructor:</br>
- *   </br>(<strong>ditem, String, String</strong>)
- * 
  * @note Remember to always use the @Attribute annotation when creating and registering a attribute class. 
  */
 public abstract class ItemAttribute {
@@ -67,6 +56,13 @@ public abstract class ItemAttribute {
 	public abstract String onSerialize();
 	public abstract void onLoad(String data);
 
+	public boolean equals(ItemAttribute that) {
+		return key.equals(that.key);
+	}
+	public boolean similar(ItemAttribute that) {
+		return equals(that);
+	}
+	
 	@Override
 	@SuppressWarnings("all")
 	public final boolean equals(Object o)
