@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.dandielo.core.exceptions.InvalidAttributeValueException;
 import net.dandielo.core.items.dItem;
 
 import org.bukkit.inventory.ItemStack;
@@ -43,7 +44,7 @@ public abstract class ItemAttribute {
 	
 	/* Fighting with items */
 	public void onAssign(ItemStack item, boolean abstrac) { }
-	public void onRefactor(ItemStack item) { }
+	public void onRefactor(ItemStack item) throws InvalidAttributeValueException { }
 		
 	/* advanced interfaces */
 	public ItemStack onNativeAssign(ItemStack item, boolean abstrac) {

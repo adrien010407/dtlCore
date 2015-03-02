@@ -1,9 +1,16 @@
 package net.dandielo.core.items.serialize.core;
 
+import org.bukkit.inventory.ItemStack;
+
 import net.dandielo.core.items.dItem;
 import net.dandielo.core.items.serialize.Attribute;
 import net.dandielo.core.items.serialize.ItemAttribute;
 
+/**
+ * Describes the items amount attribute. 
+ * @author dandielo
+ *
+ */
 @Attribute(key = "a", name = "Amount")
 public class Amount extends ItemAttribute {
 	private int amount;
@@ -28,5 +35,15 @@ public class Amount extends ItemAttribute {
 	@Override
 	public void onLoad(String data) {
 		amount = Integer.parseInt(data);
+	}
+	
+	@Override
+	public void onRefactor(ItemStack item) {
+		amount = item.getAmount();
+	}
+	
+	@Override
+	public void onAssign(ItemStack item, boolean abstrac) {
+		item.setAmount(amount);
 	}
 }

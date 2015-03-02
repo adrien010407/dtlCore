@@ -56,7 +56,7 @@ public class dItem {
 		
 		//if (hasFlag(Lore.class))		
 		return is;
-	} //does not has stand-alone attributes items
+	} 
 	
 	public ItemStack getAbstractItem() {
 		ItemStack is = new ItemStack(material);
