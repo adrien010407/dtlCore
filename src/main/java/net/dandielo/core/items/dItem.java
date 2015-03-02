@@ -45,17 +45,17 @@ public class dItem {
 	
 	/* Item generation */
 	public ItemStack getItem() {
-		ItemStack is = new ItemStack(material);
-		is.setData(data);
+		ItemStack resultItem = new ItemStack(material);
+		resultItem.setData(data);
 		
 		for (ItemAttribute attribute : attributes)
-			is = attribute.onNativeAssign(is, true);
+			resultItem = attribute.onNativeAssign(resultItem, true);
 		
 		for (ItemFlag flag : flags)
-			is = flag.onNativeAssign(is, true);
+			resultItem = flag.onNativeAssign(resultItem, true);
 		
 		//if (hasFlag(Lore.class))		
-		return is;
+		return resultItem;
 	} 
 	
 	public ItemStack getAbstractItem() {
@@ -159,14 +159,14 @@ public class dItem {
 	public List<String> getDescription() { return null; } //adds stand-alone attribute descriptions
 	
 	
-	
+	/* Custom NBT tag manipulation */
+	//TODO allow to easily apply NBT data to an dItem
 	
 	
 	
 	/* Attribute manipulation */
-	@SuppressWarnings("unchecked")
 	public <T extends ItemAttribute> T addAttribute(Class<T> clazz) {
-		T attribute = (T) ItemAttribute.init(this, clazz);
+		T attribute = ItemAttribute.init(this, clazz);
 		attributes.remove(attribute);
 		attributes.add(attribute);
 		return attribute;

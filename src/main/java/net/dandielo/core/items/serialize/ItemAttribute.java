@@ -1,8 +1,13 @@
 package net.dandielo.core.items.serialize;
 
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.dandielo.core.exceptions.InvalidAttributeValueException;
 import net.dandielo.core.items.dItem;
@@ -61,9 +66,24 @@ public abstract class ItemAttribute {
 	public String toString() { return onSerialize(); }
 	public abstract String onSerialize();
 	public abstract void onLoad(String data);
+
+	@Override
+	@SuppressWarnings("all")
+	public final boolean equals(Object o)
+	{
+		return (
+			o instanceof ItemAttribute 
+			&& key.equals(((ItemAttribute)o).key) 
+			&& (sub == null ? 
+				/* if */ ((ItemAttribute)o).sub == null 
+				/* else */ : sub.equals(((ItemAttribute)o).sub))
+		);
+	}
 	
 	@Override
-	public int hashCode() { return 0; }
+	public int hashCode() { 
+		return (key + (sub == null ? "" : "." + sub)).hashCode(); 
+	}
 
 	/* Static factory maps */
 	private static Map<String, Attribute> attributeKeys;
@@ -75,8 +95,87 @@ public abstract class ItemAttribute {
 		attributeClasses = new HashMap<Attribute, Class<? extends ItemAttribute>>();
 	}
 	
+	/**
+	 * Returns required attribute instances in a list. This list is used later to init any item with required attributes.
+	 * Initial attributes do not contain sub-attributes.
+	 * @return
+	 *     A list of each attribute instance
+	 */
+	public static Set<ItemAttribute> getRequiredAttributes()
+	{
+		//create the list holding all attribute instances
+		Set<ItemAttribute> result = new HashSet<ItemAttribute>();
+		for ( Map.Entry<Attribute, Class<? extends ItemAttribute>> attr : attributeClasses.entrySet() )
+		{
+			try 
+			{
+				if ( attr.getKey().required() )
+				{
+					ItemAttribute attrInstance = attr.getValue().getConstructor(dItem.class, String.class).newInstance(attr.getKey().key());
+					result.add(attrInstance);
+				}
+			} 
+			catch (Exception e)
+			{
+				//TODO error information
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * Returns all attribute instances in a list. This list is used later to factorize data from a item.
+	 * @param item
+	 *     The item thats material will be checked for getting all attributes for it.</br>
+	 *     Set to <strong>null</strong> if you want to get ALL attributes
+	 * @return
+	 *     A list of each attribute instance
+	 */
+	public static List<ItemAttribute> getAllAttributes(ItemStack item)
+	{
+		//create the list holding all attribute instances
+		List<ItemAttribute> result = new ArrayList<ItemAttribute>();
+		for ( Map.Entry<Attribute, Class<? extends ItemAttribute>> attr : attributeClasses.entrySet() )
+		{
+			Attribute attrInfo = attr.getKey();
+			
+			//check if we need this attribute
+			if (attrInfo.required() || Arrays.binarySearch(attrInfo.items(), item.getType()) >= 0 ||
+				(attrInfo.items().length == 0 && !attrInfo.standalone()))
+			{
+				try 
+				{
+					try {
+						Constructor<? extends ItemAttribute> constr = attr.getValue()
+								.getConstructor(dItem.class, String.class);
+						if (constr != null)
+						{
+							ItemAttribute iAttr = constr.newInstance(attrInfo.key());
+							result.add(iAttr);
+						}
+					}catch(NoSuchMethodException ex) {
+					}
+
+					//With subkeys
+					for (String sub : attrInfo.sub())
+					{
+						ItemAttribute iAttr = attr.getValue()
+								.getConstructor(dItem.class, String.class, String.class)
+								.newInstance(attrInfo.key(), sub);
+						result.add(iAttr);
+					}
+				} 
+				catch (Exception e)
+				{
+				}
+			}
+		}
+		return result;
+	}
+	
 	/* Factories */
-	public static ItemAttribute init(dItem item, Class<? extends ItemAttribute> clazz) {
+	@SuppressWarnings("unchecked")
+	public static <T extends ItemAttribute> T init(dItem item, Class<T> clazz) {
 		Attribute aInfo = clazz.getAnnotation(Attribute.class);
 		ItemAttribute result = null;
 		
@@ -85,10 +184,10 @@ public abstract class ItemAttribute {
 			try {
 				result = clazz.getConstructor(dItem.class, String.class).newInstance(item, aInfo.key());
 			} catch(Exception e) {
-				//some kind of error 
+				//TODO on exception
 			}
 		}
-		return result;
+		return (T) result;
 	}
 	
 	public static ItemAttribute init(dItem item, String key, String value) {
@@ -105,7 +204,7 @@ public abstract class ItemAttribute {
 					result = clazz.getConstructor(dItem.class, String.class)
 							.newInstance(item, keyPair[0]);
 				} catch(Exception e) {
-					//some kind of error 
+					//TODO some kind of error 
 				}
 			}
 			else
@@ -114,7 +213,7 @@ public abstract class ItemAttribute {
 					result = clazz.getConstructor(dItem.class, String.class, String.class)
 							.newInstance(item, keyPair[0], keyPair[1]);
 				} catch(Exception e) {
-					//some kind of error 
+					//TODO some kind of error 
 				}
 			}
 			
