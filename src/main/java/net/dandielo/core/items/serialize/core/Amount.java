@@ -16,12 +16,17 @@ public class Amount extends ItemAttribute {
 		return amount;
 	}
 
+	public void setValue(int amount) {
+		this.amount = amount;
+	}
+
 	@Override
 	public String onSerialize() {
-		return null;
+		return String.valueOf(amount);
 	}
 
 	@Override
 	public void onLoad(String data) {
+		amount = Integer.parseInt(data);
 	}
 }

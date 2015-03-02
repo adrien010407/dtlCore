@@ -7,6 +7,7 @@ import java.util.Set;
 
 import net.dandielo.core.items.serialize.ItemAttribute;
 import net.dandielo.core.items.serialize.ItemFlag;
+import net.dandielo.core.items.serialize.core.Amount;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -70,9 +71,18 @@ public class dItem {
 		return is; 
 	}
 	
-	/* Item methods */
-	public int getAmount() { return 0; }
-	public void setAmount(int amount) { }
+	/* Item specific attribute methods */
+	/**
+	 * Returns the items amount.
+	 * @return
+	 *   Amount of the item
+	 */
+	public int getAmount() { 
+		return getAttribute(Amount.class).getValue(); 
+	}
+	public void setAmount(int amount) {
+		getAttribute(Amount.class).setValue(amount);
+	}
 	
 	public Material getMaterial() { 
 		return material; 
@@ -80,13 +90,14 @@ public class dItem {
 	public void setMaterial(Material material) { 
 		this.material = material; 
 	}
-	
-	@Deprecated()
+
+	/**
+	 * @deprecated Magic value
+	 * @return
+	 */
 	public int getTypeId() { 
 		return material.getId(); 
 	} 
-	public int getItemId() { return 0; } //uses the id attribute
-	
 	public int getTypeData() { return data.getData(); } //like wool colors
 	
 	public String getName() { return null; } //returns the items name or material name instead (lower case)
@@ -94,6 +105,11 @@ public class dItem {
 	
 	public List<String> getLore() { return null; }
 	public List<String> getDescription() { return null; } //adds stand-alone attribute descriptions
+	
+	
+	
+	
+	
 	
 	/* Attribute manipulation */
 	@SuppressWarnings("unchecked")
@@ -113,8 +129,9 @@ public class dItem {
 		attributes.remove(attribute);
 		attributes.add(attribute);
 	}
-	
-	public ItemAttribute getAttribute(Class<? extends ItemAttribute> clazz) {
+
+	@SuppressWarnings("unchecked")
+	public <T extends ItemAttribute> T getAttribute(Class<T> clazz) {
 		ItemAttribute result = null;
 		Iterator<ItemAttribute> it = attributes.iterator();
 		while(it.hasNext() && result == null)
@@ -126,7 +143,7 @@ public class dItem {
 			if (!clazz.isInstance(result))
 				result = null;
 		}
-		return result;
+		return (T) result;
 	} 
 	public ItemAttribute getAttribute(String key) { 
 		ItemAttribute result = null;
