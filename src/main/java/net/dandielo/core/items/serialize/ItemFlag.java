@@ -87,6 +87,10 @@ public abstract class ItemFlag {
 	public boolean similar(ItemFlag that) {
 		return equals(that);
 	}
+
+	public Attribute getInfo() {
+		return getClass().getAnnotation(Attribute.class);
+	}
 	
 	/**
 	 * @return returns the flags save string.

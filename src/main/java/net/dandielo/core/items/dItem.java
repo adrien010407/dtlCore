@@ -67,41 +67,70 @@ public class dItem {
 	}
 	
 	/**
+	 * Serialized the item and all its components in a single string line.
+	 * @return
+	 *   The serialized item.
+	 */
+	public String serialize() { return null; }
+	
+	/**
+	 * Loads from a string all item components and data. 
+	 * @param data
+	 *   Data to read from.
+	 */
+	public void load(String data) { }
+	
+	/**
 	 * Create a native item stack from all components. 
 	 * @return
 	 *   The new ItemStack item.
 	 */
 	public ItemStack getItem() {
-		ItemStack resultItem = new ItemStack(material);
-		resultItem.setData(materialData);
-		
-		for (ItemAttribute attribute : attributes)
-			resultItem = attribute.onNativeAssign(resultItem, true);
-		
-		for (ItemFlag flag : flags)
-			resultItem = flag.onNativeAssign(resultItem, true);
-		
-		//TODO if (hasFlag(Lore.class))		
-		return resultItem;
+		return getItem(false);
 	} 
 	
 	/**
-	 * Create a native item stack from all components, including all abstract components that wont be present in the end result item.
+	 * Create a native item stack from all components.
+	 * @param abstrac
+	 *   Specify if the item should be returned with abstract data, that normal wouldn't be there. For example debug data.
 	 * @return
 	 *   The new ItemStack item with additional data.
 	 */
-	public ItemStack getAbstractItem() {
-		ItemStack is = new ItemStack(material);
-		is.setData(materialData);
+	public ItemStack getItem(boolean abstrac) {
+		@SuppressWarnings("deprecation")
+		ItemStack resultItem = new ItemStack(material, 1, materialData.getData());
+
+		//add the lore as the first one
+		if ( hasFlag(Lore.class) )
+			getFlag(Lore.class, false).onAssign(resultItem, abstrac);
+
+		List<ItemAttribute> firstPass = new ArrayList<ItemAttribute>();
+		List<ItemAttribute> secondPass = new ArrayList<ItemAttribute>();
+		for (ItemAttribute itemAttr : attributes)
+		{
+			if (itemAttr instanceof Name)// || itemAttr instanceof Skull || itemAttr instanceof StoredEnchant || itemAttr instanceof Book)
+			{
+				firstPass.add(itemAttr);
+			} 
+			else 
+			{
+				secondPass.add(itemAttr);
+			}
+		}
+
+		for (ItemAttribute itemAttr : firstPass)
+			resultItem = itemAttr.onNativeAssign(resultItem, abstrac);
 		
-		for (ItemAttribute attribute : attributes)
-			is = attribute.onNativeAssign(is, false);
-		
+		for (ItemAttribute itemAttr : secondPass)
+			resultItem = itemAttr.onNativeAssign(resultItem, abstrac);
+
 		for (ItemFlag flag : flags)
-			is = flag.onNativeAssign(is, false);
-		
-		//TODO if (hasFlag(Lore.class))		
-		return is; 
+		{
+			if ( !flag.getKey().equals(".lore") )
+				resultItem = flag.onNativeAssign(resultItem, abstrac);
+		}
+
+		return resultItem; 
 	}
 	
 	/**
@@ -328,18 +357,35 @@ public class dItem {
 	 * @param key
 	 *   The attribute key we are looking for.
 	 * @return
-	 *   <b>true</b> if we find a extact attribute.
+	 *   <b>true</b> if we find a exact attribute.
 	 */
 	public boolean hasAttribute(String key) { 
 		return getAttribute(key) != null; 
 	} 
 	
+	/**
+	 * Removes a attribute from this item.
+	 * @param clazz
+	 *   The class of the attribute that should be removed. 
+	 */
 	public void removeAttribute(Class<? extends ItemAttribute> clazz) {
 		attributes.remove(getAttribute(clazz, false));
 	} 
+	
+	/**
+	 * Removes a attribute from this item.
+	 * @param key
+	 *   The key of the attribute that should be removed.
+	 */
 	public void removeAttribute(String key) { 
 		attributes.remove(getAttribute(key));
 	} 
+	 
+	/**
+	 * Removes all attributes with the specified general key.
+	 * @param gkey
+	 *   The general key to be removed from this item.
+	 */
 	public void removeAttributes(String gkey) {
 		for (ItemAttribute attribute : getAttributes(gkey))
 			attributes.remove(attribute);
@@ -415,17 +461,95 @@ public class dItem {
 	
 	/* Checks and comparsions */
 	@Override
-	public boolean equals(Object that) { return equals((dItem)that); }
-	public boolean equals(dItem that) { return false; } //Bypasses stand-alone attributes
-	public boolean similar(dItem item) { return false; } //Allows for weaker equality, for example if attributes exists only
+	public boolean equals(Object that) { return that instanceof dItem && equals((dItem)that); }
+	public boolean equals(dItem that) { 
+		boolean equals = material.equals(that.getMaterial());
+		//TODO Durability! // equals &= !ItemUtils.itemHasDurability(item.item) ? item.item.getDurability() == this.item.getDurability() : equals; 
+
+		if ( equals )
+		{
+			for (ItemAttribute itemAttr : attributes)
+			{
+				//TODO This loooks baaaaad!
+				if (!equals) break;
+				if (!itemAttr.getInfo().standalone())
+				{
+					for (ItemAttribute thatItemAttr : that.attributes)
+					{
+						if (itemAttr.getClass().equals(thatItemAttr.getClass()))
+							equals &= itemAttr.equals(thatItemAttr);
+					}
+				}
+			}
+
+			//for each attribute in this item
+			for (ItemFlag itemFlag : flags)
+			{
+				//TODO This loooks baaaaad!
+				if (!equals) break;
+				if (!itemFlag.getInfo().standalone())
+				{
+					for (ItemFlag thatItemFlag : that.flags)
+						if (itemFlag.getClass().equals(thatItemFlag.getClass()))
+							equals &= itemFlag.equals(thatItemFlag);
+				}
+			}
+		}
+		return equals;
+	}
+	
+	public boolean similar(dItem that) {
+		boolean equals = material.equals(that.getMaterial());
+		
+		//if equals check data, if not durability
+		//TODO: durability // equals &= !ItemUtils.itemHasDurability(item.item) ? item.item.getDurability() == this.item.getDurability() : equals; 
+		if (equals)
+		{
+			for (ItemAttribute itemAttr : attributes)
+			{
+				//TODO: WTF?!
+				if (!equals) break;
+				if (!itemAttr.getInfo().standalone())
+				{
+					for (ItemAttribute thatItemAttr : that.attributes)
+					{
+						if ( itemAttr.getClass().equals(thatItemAttr.getClass()) )
+							equals &= itemAttr.similar(thatItemAttr);
+					}
+				}
+			}
+			
+			//for each attribute in this item
+			for (ItemFlag itemFlag : flags)
+			{				
+				//TODO: WTF?!
+				if (!equals) break;
+				if (!itemFlag.getInfo().standalone())
+				{
+					for (ItemFlag thatItemFlag : that.flags)
+						if (itemFlag.getClass().equals(thatItemFlag.getClass()))
+							equals &= itemFlag.similar(thatItemFlag);
+				}
+			}
+		}
+		return equals;
+	} 
 	
 	/* Serialization */
 	@Override
 	public String toString() { return serialize(); }
-	public String serialize() { return null; }
-	public void load(String data) { }
 	
 	@Override
-	public int hashCode() { return 0; }
+	public int hashCode() {
+	    int hash = 7;
+
+	    hash = 73 * hash + (this.material != null ? this.material.hashCode() : 0);
+	    hash = 73 * hash + (this.materialData != null ? this.materialData.hashCode() : 0);
+	    hash = 73 * hash + (this.attributes != null ? this.attributes.hashCode() : 0);
+	    hash = 73 * hash + (this.flags != null ? this.flags.hashCode() : 0);
+//	    hash = 73 * hash + (this.loreManaged ? 1 : 0); TODO?
+	    
+	    return hash;
+	}
 }
 

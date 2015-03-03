@@ -50,6 +50,11 @@ public abstract class ItemAttribute {
 	public String getKey() { return key; }
 	public String getSubkey() { return sub; }
 	
+	public Attribute getInfo() {
+		//TODO maybe save it in this object for some reason?
+		return getClass().getAnnotation(Attribute.class);
+	}
+	
 	/* Serialization */
 	@Override
 	public String toString() { return onSerialize(); }
