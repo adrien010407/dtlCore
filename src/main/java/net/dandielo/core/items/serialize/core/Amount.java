@@ -28,7 +28,7 @@ public class Amount extends ItemAttribute {
 	}
 
 	@Override
-	public String onSerialize() {
+	public String serialize() {
 		return String.valueOf(amount);
 	}
 

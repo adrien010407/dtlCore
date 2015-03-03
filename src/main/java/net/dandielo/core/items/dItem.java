@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.dandielo.core.items.serialize.ItemAttribute;
 import net.dandielo.core.items.serialize.ItemFlag;
@@ -49,7 +51,7 @@ public class dItem {
 	 *   Serialized item data.
 	 */
 	public dItem(String data) { 
-		load(data);
+		deserialize(data);
 	}
 	
 	/**
@@ -60,7 +62,7 @@ public class dItem {
 	 *   Adds lore to the item that will be created from string data.
 	 */
 	public dItem(String data, List<String> lore) {
-		load(data);
+		deserialize(data);
 		
 		if (hasFlag(Lore.class))
 			getFlag(Lore.class, false).setValue(lore);
@@ -71,14 +73,88 @@ public class dItem {
 	 * @return
 	 *   The serialized item.
 	 */
-	public String serialize() { return null; }
+	@SuppressWarnings("deprecation")
+	public String serialize() {
+		String result = material.name().toLowerCase();
+		
+		if (material.getMaxDurability() == 0 && materialData.getData() != 0)
+			result += ":" + materialData.getData();
+
+		for (ItemAttribute entry : attributes)
+			result += " " + entry.serialize();
+
+		//TODO: Add these flags
+//		ItemFlag abs = removeFlag(Abstract.class); 
+		for (ItemFlag flag : flags)
+			result += " " + flag.getKey();		
+		
+		//TODO: Add this flag
+//		if ( abs != null ) flags.put(Abstract.class, abs); 
+		return result; 
+		
+	}
 	
 	/**
 	 * Loads from a string all item components and data. 
 	 * @param data
 	 *   Data to read from.
 	 */
-	public void load(String data) { }
+	public void deserialize(String data) {
+		//TODO: change addFlag(".abstract"); to addFlag(Abstract.class) 
+		
+		String[] itemData = data.split(" ", 2);
+		
+		//TODO: reset attributes
+		if ( itemData[0].contains(":") );
+			//TODO: Same as above addFlag(".dc");
+		
+		if ( itemData.length == 1 ) return;
+
+		final String ITEM_PATTERN = "(([^ :]+):([^ :]+))|([^ :]*)";
+		Matcher matcher = Pattern.compile(ITEM_PATTERN).matcher(itemData[1]);
+
+		String key = "", value = "";
+		while(matcher.find())
+		{
+			if (matcher.group(2) != null)
+			{ 
+				if (key.startsWith("."))
+					addFlag(key);
+				else  
+				if (!key.isEmpty() && value != null)
+					addAttribute(key, value.trim());
+				
+				//set new values
+				key = matcher.group(2);
+				value = matcher.group(3);
+			}
+			else
+			if (matcher.group(4) != null)
+			{
+				if (matcher.group(4).startsWith("."))
+				{
+					if (key.startsWith("."))
+						addFlag(key);
+					else
+					if (!key.isEmpty() && value != null)
+						addAttribute(key, value.trim());
+					
+					//set new values
+					key = matcher.group(4);
+					value = "";
+				}
+				else if ( !matcher.group(4).isEmpty() )
+				{
+					value += " " + matcher.group(4);
+				}
+			}
+		}
+		if ( key.startsWith(".") )
+			addFlag(key);
+		else
+		if (!key.isEmpty() && value != null)
+			addAttribute(key, value.trim());
+	}
 	
 	/**
 	 * Create a native item stack from all components. 
@@ -161,12 +237,22 @@ public class dItem {
 	}
 	
 	/**
+	 * Returns the material data based on the material. 
+	 * @return
+	 *   The items material data.
+	 */
+	public MaterialData getMaterialData() {
+		return materialData;
+	}
+	
+	/**
 	 * Sets a new material for the item. 
 	 * <p>This operation may remove attributes that are not compatible with the new material.</p> 
 	 * @param material
 	 *   The new material for the item.
 	 */
 	public void setMaterial(Material material) { 
+		//TODO Maybe change this into material data only? 
 		this.material = material; 
 	}
 
@@ -188,7 +274,9 @@ public class dItem {
 	 *   The materials data value.
 	 */
 	@SuppressWarnings("deprecation")
-	public int getTypeData() { return materialData.getData(); } //like wool colors
+	public int getTypeData() { 
+		return materialData.getData(); 
+	} 
 	
 	/**
 	 * Returns the items custom name
@@ -215,8 +303,7 @@ public class dItem {
 	}
 	
 	/**
-	 * Trying to access the lore of an item will result in initializing a lore flag.
-	 * <p>Should it init that flag?</p> 
+	 * Will return the items lore or a empty list. It won't add the lore component to the item.
 	 * @return
 	 */
 	public List<String> getLore() { 
@@ -231,6 +318,7 @@ public class dItem {
 	 */
 	public List<String> getDescription() {
 		List<String> result = new ArrayList<String>();
+		//TODO we need to finish this one
 		result.addAll(getLore());
 		return result; 
 	} 
@@ -391,35 +479,44 @@ public class dItem {
 			attributes.remove(attribute);
 	} 
 	
-	/* Flag manipulation */
+	/**
+	 * Adds a flag to the item.
+	 * @param clazz
+	 *   The class of the flag that should be added.
+	 */
 	public void addFlag(Class<? extends ItemFlag> clazz) { 
 		flags.add(ItemFlag.init(this, clazz));
 	}
+	
+	/**
+	 * Adds a flag to the item.
+	 * @param flag
+	 *   The flag that should be added.
+	 */
 	public void addFlag(String flag) {
 		flags.add(ItemFlag.init(this, flag));
 	} 
 	
+	/**
+	 * Checks if the item has a flag with the specific class.
+	 * @param clazz
+	 *   The class of the flag that we are looking for/
+	 * @return
+	 *   <b>true</b> if the flag was found.
+	 */
 	public boolean hasFlag(Class<? extends ItemFlag> clazz) { 
-		ItemAttribute result = null;
-		Iterator<ItemAttribute> it = attributes.iterator();
-		while(it.hasNext() && result == null)
-		{
-			result = it.next();
-			if (!clazz.isInstance(result))
-				result = null;
-		}
-		return result != null;
+		return getFlag(clazz, false) != null;
 	}
+	
+	/**
+	 * Checks if the item has a flag with the specific key.
+	 * @param flag
+	 *   The flag key we are looking for
+	 * @return
+	 *   <b>true</b> if the flag was found.
+	 */
 	public boolean hasFlag(String flag) {
-		ItemAttribute result = null;
-		Iterator<ItemAttribute> it = attributes.iterator();
-		while(it.hasNext() && result == null)
-		{
-			result = it.next();
-			if (!result.getKey().equals(flag))
-				result = null;
-		}
-		return result != null;
+		return getFlag(flag) != null;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -439,6 +536,7 @@ public class dItem {
 		}
 		return (T) result;
 	}
+	
 	public ItemFlag getFlag(String flag) {
 		ItemFlag result = null;
 		Iterator<ItemFlag> it = flags.iterator();

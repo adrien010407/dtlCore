@@ -57,8 +57,8 @@ public abstract class ItemAttribute {
 	
 	/* Serialization */
 	@Override
-	public String toString() { return onSerialize(); }
-	public abstract String onSerialize();
+	public String toString() { return serialize(); }
+	public abstract String serialize();
 	public abstract void onLoad(String data);
 
 	public boolean equals(ItemAttribute that) {

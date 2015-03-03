@@ -25,7 +25,7 @@ public class Name extends ItemAttribute {
 	}
 
 	@Override
-	public String onSerialize() {
+	public String serialize() {
 		return name.replace('§', '&');
 	}
 
