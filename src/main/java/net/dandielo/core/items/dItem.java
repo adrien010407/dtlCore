@@ -97,15 +97,16 @@ public class dItem {
 	 * @param data
 	 *   Data to read from.
 	 */
+	@SuppressWarnings("deprecation")
 	public void deserialize(String data) {
 		String[] itemData = data.split(" ", 2);
 		String[] itemMaterial = itemData[0].split(":");
 		
-		//TODO: reset attributes
+		clearItem();
 		
 		material = Material.getMaterial(itemMaterial[0].toUpperCase());
 		if (itemMaterial.length > 1)
-			materialData = material.getNewData(Byte.parseByte(itemMaterial[1]));
+			materialData = new MaterialData(material, Byte.parseByte(itemMaterial[1]));//material.getNewData(Byte.parseByte(itemMaterial[1]));
 		
 		if ( itemData.length == 1 ) return;
 
@@ -174,12 +175,9 @@ public class dItem {
 				flags.add(iFlag);
 		}
 		
-		//if the lore was already managed don't load it anymore
-		//TODO: if ( loreManaged ) return;
+		//TODO: check if removing from the meta data the lore component it will preserve till this check.
 
-		Lore lore = null;
-		lore = (Lore) ItemFlag.init(this, ".lore");
-		
+		Lore lore  = (Lore) ItemFlag.init(this, ".lore");
 		if(lore.onRefactor(item))
 			flags.add(lore); 
 	}
@@ -201,9 +199,8 @@ public class dItem {
 	 *   The new ItemStack item with additional data.
 	 */
 	public ItemStack getItem(boolean abstrac) {
-		@SuppressWarnings("deprecation")
-		ItemStack resultItem = new ItemStack(material, 1, materialData.getData());
-
+		ItemStack resultItem = materialData.toItemStack();
+		
 		//add the lore as the first one
 		if ( hasFlag(Lore.class) )
 			getFlag(Lore.class, false).onAssign(resultItem, abstrac);
@@ -281,7 +278,7 @@ public class dItem {
 	 */
 	public void setMaterial(Material material) { 
 		this.material = material;
-		this.materialData = material.getNewData((byte)0);
+		this.materialData = new MaterialData(material);//material.getNewData((byte)0);
 	}
 
 	/**
@@ -347,11 +344,10 @@ public class dItem {
 	public List<String> getDescription() {
 		List<String> result = new ArrayList<String>();
 		for (ItemAttribute attribute : attributes)
-			//TODO: make up a name that makes sense.
-			attribute.onDescription(result);
+			attribute.getDescription(result);
 		for (ItemFlag flag : flags)
 			if (!(flag instanceof Lore))
-				flag.onDescription(result);
+				flag.getDescription(result);
 		result.addAll(getLore());
 		return result; 
 	} 
@@ -521,7 +517,7 @@ public class dItem {
 	public void removeAttributes(String gkey) {
 		for (ItemAttribute attribute : getAttributes(gkey))
 			attributes.remove(attribute);
-	} 
+	}
 	
 	/**
 	 * Adds a flag to the item.
@@ -563,6 +559,17 @@ public class dItem {
 		return getFlag(flag) != null;
 	}
 	
+	/**
+	 * Returns the given flag if it's found.
+	 * <p>If the create parameter is set to true, if the flag wasn't found a new one will be instantinated with default values, added to the items
+	 * flags and then returned.</p>
+	 * @param clazz
+	 *   The class of the flag we want to get.
+	 * @param create
+	 *   If <b>true</b> it will create the flag if it's not found. 
+	 * @return
+	 *   The flag that we want to have returned.
+	 */
 	@SuppressWarnings("unchecked")
 	public <T extends ItemFlag> T getFlag(Class<T> clazz, boolean create) {
 		ItemFlag result = null;
@@ -581,6 +588,13 @@ public class dItem {
 		return (T) result;
 	}
 	
+	/**
+	 * Returns the specified flag.
+	 * @param flag
+	 *   The flag key we are looking for.
+	 * @return
+	 *   The flag that was found or null otherwise.
+	 */
 	public ItemFlag getFlag(String flag) {
 		ItemFlag result = null;
 		Iterator<ItemFlag> it = flags.iterator();
@@ -593,19 +607,45 @@ public class dItem {
 		return result;
 	}
 	
+	/**
+	 * Removes a flag from the item.
+	 * @param clazz
+	 *   The class of the flag that should be removed.
+	 */
 	public void removeFlag(Class<? extends ItemFlag> clazz) {
 		flags.remove(getFlag(clazz, false));
 	}
 	
+	/**
+	 * Removes a flag from the item.
+	 * @param flag
+	 *   The key of the flag that should be removed.
+	 */
 	public void removeFlag(String flag) {
 		flags.remove(getFlag(flag));
 	}
 	
-	/* Checks and comparsions */
+	/**
+	 * Removes all attributes and flags from the item.
+	 */
+	public void clearItem() {
+		attributes.clear();
+		flags.clear();
+	}
+	
+	/**
+	 * Compares two items using the strict method.
+	 */
 	@Override
 	public boolean equals(Object that) { return that instanceof dItem && equals((dItem)that); }
 	
-	
+	/**
+	 * Strict comparing, all values need to be equal. 
+	 * @param that
+	 *   The second item we are comparing against.
+	 * @return
+	 *   <b>true</> if both items are equal.
+	 */
 	public boolean equals(dItem that) { 
 		boolean equals = material.equals(that.getMaterial());
 		
@@ -641,6 +681,13 @@ public class dItem {
 		return equals;
 	}
 
+	/**
+	 * Weak comparing, attributes needs to be the same, but values of attributes may differ. 
+	 * @param that
+	 *   The second item we are comparing against.
+	 * @return
+	 *   <b>true</> if both items are equal.
+	 */
 	public boolean similar(dItem that) {
 		boolean equals = material.equals(that.getMaterial());
 
@@ -676,7 +723,9 @@ public class dItem {
 		return equals;
 	} 
 	
-	/* Serialization */
+	/**
+	 * Uses the {@code serialize} method.
+	 */
 	@Override
 	public String toString() { return serialize(); }
 	
@@ -688,7 +737,6 @@ public class dItem {
 	    hash = 73 * hash + (this.materialData != null ? this.materialData.hashCode() : 0);
 	    hash = 73 * hash + (this.attributes != null ? this.attributes.hashCode() : 0);
 	    hash = 73 * hash + (this.flags != null ? this.flags.hashCode() : 0);
-//	    hash = 73 * hash + (this.loreManaged ? 1 : 0); TODO?
 	    
 	    return hash;
 	}

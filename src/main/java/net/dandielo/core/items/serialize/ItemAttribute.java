@@ -48,7 +48,7 @@ public abstract class ItemAttribute {
 	}
 	 
 	/* When we want to describe an item */
-	public void onDescription(List<String> result) {
+	public void getDescription(List<String> result) {
 	}
 	
 	/* default operations */
