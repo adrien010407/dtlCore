@@ -36,8 +36,7 @@ public abstract class ItemFlag {
 	 * @param key
 	 *     the flag key
 	 */
-	public ItemFlag(dItem item, String key)
-	{
+	public ItemFlag(dItem item, String key) {
 		this.item = item;
 		this.key = key;
 	}
@@ -51,8 +50,7 @@ public abstract class ItemFlag {
 	 * @param abstrac
 	 *     tells the method if the item is just displayed in the traders inventory or if it's the users end-item he bought  
 	 */
-	public ItemStack onNativeAssign(ItemStack item, boolean abstrac)
-	{
+	public ItemStack onNativeAssign(ItemStack item, boolean abstrac) {
 		onAssign(item, abstrac);
 		return item;
 	}
@@ -69,11 +67,15 @@ public abstract class ItemFlag {
 	/**
 	 * Called when trying to get flag data information from the given item. If no valid data for this flag is found then it throws an exception.
 	 * @param item
+	 * @return 
 	 * @throws InvalidAttributeValueException
 	 */
-	public void onFactorize(ItemStack item) throws InvalidAttributeValueException
-	{
-		throw new InvalidAttributeValueException();
+	public boolean onRefactor(ItemStack item) {
+		return false;
+	}
+	 
+	/* When we want to describe an item */
+	public void onDescription(List<String> result) {
 	}
 	
 	/**
@@ -258,7 +260,7 @@ public abstract class ItemFlag {
 		}
 	}
 	
-	private static String flagsAsString()
+	protected static String flagsAsString()
 	{
 		String result = "";
 		//format the string

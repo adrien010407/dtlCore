@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import net.dandielo.core.items.serialize.ItemAttribute;
 import net.dandielo.core.items.serialize.ItemFlag;
 import net.dandielo.core.items.serialize.core.Amount;
+import net.dandielo.core.items.serialize.core.Durability;
 import net.dandielo.core.items.serialize.core.Name;
 import net.dandielo.core.items.serialize.flags.Lore;
 
@@ -43,6 +44,7 @@ public class dItem {
 	public dItem(ItemStack item) { 
 		material = item.getType();
 		materialData = item.getData();
+		refactor(item);
 	}
 	
 	/**
@@ -83,13 +85,9 @@ public class dItem {
 		for (ItemAttribute entry : attributes)
 			result += " " + entry.serialize();
 
-		//TODO: Add these flags
-//		ItemFlag abs = removeFlag(Abstract.class); 
 		for (ItemFlag flag : flags)
 			result += " " + flag.getKey();		
 		
-		//TODO: Add this flag
-//		if ( abs != null ) flags.put(Abstract.class, abs); 
 		return result; 
 		
 	}
@@ -100,13 +98,14 @@ public class dItem {
 	 *   Data to read from.
 	 */
 	public void deserialize(String data) {
-		//TODO: change addFlag(".abstract"); to addFlag(Abstract.class) 
-		
 		String[] itemData = data.split(" ", 2);
+		String[] itemMaterial = itemData[0].split(":");
 		
 		//TODO: reset attributes
-		if ( itemData[0].contains(":") );
-			//TODO: Same as above addFlag(".dc");
+		
+		material = Material.getMaterial(itemMaterial[0].toUpperCase());
+		if (itemMaterial.length > 1)
+			materialData = material.getNewData(Byte.parseByte(itemMaterial[1]));
 		
 		if ( itemData.length == 1 ) return;
 
@@ -154,6 +153,35 @@ public class dItem {
 		else
 		if (!key.isEmpty() && value != null)
 			addAttribute(key, value.trim());
+	}
+	
+	/**
+	 * Tries to read all data associated with the given item.
+	 * <p>If a attribute that may exist, is not found in the given item, this attribute will not be added to the component list.</p>
+	 * @param item
+	 *   The item that should be "took part by part".
+	 */
+	public void refactor(ItemStack item)
+	{
+		for (ItemAttribute iAttr : ItemAttribute.initAllAttributes(this))
+		{
+			if (iAttr.onRefactor(item))
+				attributes.add(iAttr);
+		}
+		for (ItemFlag iFlag : ItemFlag.getAllFlags(item))
+		{
+			if(iFlag.onRefactor(item))
+				flags.add(iFlag);
+		}
+		
+		//if the lore was already managed don't load it anymore
+		//TODO: if ( loreManaged ) return;
+
+		Lore lore = null;
+		lore = (Lore) ItemFlag.init(this, ".lore");
+		
+		if(lore.onRefactor(item))
+			flags.add(lore); 
 	}
 	
 	/**
@@ -252,8 +280,8 @@ public class dItem {
 	 *   The new material for the item.
 	 */
 	public void setMaterial(Material material) { 
-		//TODO Maybe change this into material data only? 
-		this.material = material; 
+		this.material = material;
+		this.materialData = material.getNewData((byte)0);
 	}
 
 	/**
@@ -318,10 +346,26 @@ public class dItem {
 	 */
 	public List<String> getDescription() {
 		List<String> result = new ArrayList<String>();
-		//TODO we need to finish this one
+		for (ItemAttribute attribute : attributes)
+			//TODO: make up a name that makes sense.
+			attribute.onDescription(result);
+		for (ItemFlag flag : flags)
+			if (!(flag instanceof Lore))
+				flag.onDescription(result);
 		result.addAll(getLore());
 		return result; 
 	} 
+	
+	/**
+	 * Returns the items durability, and only it's durability.
+	 * <p>This attribute (unlike the native ItemStack version) does only return a values other that 0 if the item's material
+	 * has a durability defined. MaterialData is not returned.</p>  
+	 * @return
+	 *   The items current durability.
+	 */
+	public int getDurability() {
+		return hasAttribute(Durability.class) ? getAttribute(Durability.class, false).getValue() : 0;
+	}
 	
 	/**
 	 * Creates a new attributes with default values. 
@@ -560,15 +604,17 @@ public class dItem {
 	/* Checks and comparsions */
 	@Override
 	public boolean equals(Object that) { return that instanceof dItem && equals((dItem)that); }
+	
+	
 	public boolean equals(dItem that) { 
 		boolean equals = material.equals(that.getMaterial());
-		//TODO Durability! // equals &= !ItemUtils.itemHasDurability(item.item) ? item.item.getDurability() == this.item.getDurability() : equals; 
-
-		if ( equals )
+		
+		equals &= material.getMaxDurability() == 0 ? materialData.equals(that.materialData) : true;  
+		
+		if (equals)
 		{
 			for (ItemAttribute itemAttr : attributes)
 			{
-				//TODO This loooks baaaaad!
 				if (!equals) break;
 				if (!itemAttr.getInfo().standalone())
 				{
@@ -583,7 +629,6 @@ public class dItem {
 			//for each attribute in this item
 			for (ItemFlag itemFlag : flags)
 			{
-				//TODO This loooks baaaaad!
 				if (!equals) break;
 				if (!itemFlag.getInfo().standalone())
 				{
@@ -595,17 +640,16 @@ public class dItem {
 		}
 		return equals;
 	}
-	
+
 	public boolean similar(dItem that) {
 		boolean equals = material.equals(that.getMaterial());
+
+		equals &= material.getMaxDurability() == 0 ? materialData.equals(that.materialData) : true;  
 		
-		//if equals check data, if not durability
-		//TODO: durability // equals &= !ItemUtils.itemHasDurability(item.item) ? item.item.getDurability() == this.item.getDurability() : equals; 
 		if (equals)
 		{
 			for (ItemAttribute itemAttr : attributes)
 			{
-				//TODO: WTF?!
 				if (!equals) break;
 				if (!itemAttr.getInfo().standalone())
 				{
@@ -619,8 +663,7 @@ public class dItem {
 			
 			//for each attribute in this item
 			for (ItemFlag itemFlag : flags)
-			{				
-				//TODO: WTF?!
+			{
 				if (!equals) break;
 				if (!itemFlag.getInfo().standalone())
 				{

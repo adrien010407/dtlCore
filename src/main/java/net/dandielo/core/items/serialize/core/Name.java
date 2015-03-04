@@ -3,7 +3,6 @@ package net.dandielo.core.items.serialize.core;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import net.dandielo.core.exceptions.InvalidAttributeValueException;
 import net.dandielo.core.items.dItem;
 import net.dandielo.core.items.serialize.Attribute;
 import net.dandielo.core.items.serialize.ItemAttribute;
@@ -35,11 +34,13 @@ public class Name extends ItemAttribute {
 	}
 	
 	@Override
-	public void onRefactor(ItemStack item) throws InvalidAttributeValueException {
+	public boolean onRefactor(ItemStack item) {
 		ItemMeta meta = item.getItemMeta();
 		if (!meta.hasDisplayName())
-			throw new InvalidAttributeValueException();
+			return false;
+		
 		name = meta.getDisplayName();
+		return true;
 	}
 	
 	@Override

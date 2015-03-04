@@ -61,10 +61,11 @@ public class Durability extends ItemAttribute {
 	}
 	
 	@Override
-	public void onRefactor(ItemStack item) {
-		if (item.getType().getMaxDurability() > 0)//TODO what now?;
+	public boolean onRefactor(ItemStack item) {
+		if (item.getType().getMaxDurability() == 0) return false;
 			
 		durability = item.getDurability();
+		return true;
 	}
 
 	@Override

@@ -38,8 +38,9 @@ public class Amount extends ItemAttribute {
 	}
 	
 	@Override
-	public void onRefactor(ItemStack item) {
+	public boolean onRefactor(ItemStack item) {
 		amount = item.getAmount();
+		return true;
 	}
 	
 	@Override

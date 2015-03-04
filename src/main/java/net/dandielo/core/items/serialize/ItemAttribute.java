@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.dandielo.core.exceptions.InvalidAttributeValueException;
 import net.dandielo.core.items.dItem;
 
 import org.bukkit.inventory.ItemStack;
@@ -38,12 +37,18 @@ public abstract class ItemAttribute {
 	
 	/* Fighting with items */
 	public void onAssign(ItemStack item, boolean abstrac) { }
-	public void onRefactor(ItemStack item) throws InvalidAttributeValueException { }
+	public boolean onRefactor(ItemStack item) { 
+		return false; 
+	}
 		
 	/* advanced interfaces */
 	public ItemStack onNativeAssign(ItemStack item, boolean abstrac) {
 		onAssign(item, abstrac);
 		return item;
+	}
+	 
+	/* When we want to describe an item */
+	public void onDescription(List<String> result) {
 	}
 	
 	/* default operations */
@@ -70,8 +75,7 @@ public abstract class ItemAttribute {
 	
 	@Override
 	@SuppressWarnings("all")
-	public final boolean equals(Object o)
-	{
+	public final boolean equals(Object o) {
 		return (
 			o instanceof ItemAttribute 
 			&& key.equals(((ItemAttribute)o).key) 
@@ -102,9 +106,7 @@ public abstract class ItemAttribute {
 	 * @return
 	 *     A list of each attribute instance
 	 */
-	public static Set<ItemAttribute> getRequiredAttributes()
-	{
-		//create the list holding all attribute instances
+	public static Set<ItemAttribute> getRequiredAttributes() {
 		Set<ItemAttribute> result = new HashSet<ItemAttribute>();
 		for ( Map.Entry<Attribute, Class<? extends ItemAttribute>> attr : attributeClasses.entrySet() )
 		{
@@ -132,37 +134,33 @@ public abstract class ItemAttribute {
 	 * @return
 	 *     A list of each attribute instance
 	 */
-	public static List<ItemAttribute> getAllAttributes(ItemStack item)
-	{
-		//create the list holding all attribute instances
+	public static List<ItemAttribute> initAllAttributes(dItem item) {
 		List<ItemAttribute> result = new ArrayList<ItemAttribute>();
-		for ( Map.Entry<Attribute, Class<? extends ItemAttribute>> attr : attributeClasses.entrySet() )
+		for (Map.Entry<Attribute, Class<? extends ItemAttribute>> attributeEntry : attributeClasses.entrySet())
 		{
-			Attribute attrInfo = attr.getKey();
+			Attribute attrInfo = attributeEntry.getKey();
 			
 			//check if we need this attribute
-			if (attrInfo.required() || Arrays.binarySearch(attrInfo.items(), item.getType()) >= 0 ||
+			if (attrInfo.required() || Arrays.binarySearch(attrInfo.items(), item.getMaterial()) >= 0 ||
 				(attrInfo.items().length == 0 && !attrInfo.standalone()))
 			{
 				try 
 				{
 					try {
-						Constructor<? extends ItemAttribute> constr = attr.getValue()
+						Constructor<? extends ItemAttribute> constr = attributeEntry.getValue()
 								.getConstructor(dItem.class, String.class);
-						if (constr != null)
-						{
-							ItemAttribute iAttr = constr.newInstance(attrInfo.key());
-							result.add(iAttr);
-						}
+
+						ItemAttribute itemAttribute = constr.newInstance(item, attrInfo.key());
+						result.add(itemAttribute);
 					}catch(NoSuchMethodException ex) {
 					}
 
 					//With subkeys
 					for (String sub : attrInfo.sub())
 					{
-						ItemAttribute iAttr = attr.getValue()
+						ItemAttribute iAttr = attributeEntry.getValue()
 								.getConstructor(dItem.class, String.class, String.class)
-								.newInstance(attrInfo.key(), sub);
+								.newInstance(item, attrInfo.key(), sub);
 						result.add(iAttr);
 					}
 				} 
