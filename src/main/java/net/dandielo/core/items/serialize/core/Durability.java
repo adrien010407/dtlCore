@@ -31,7 +31,7 @@ public class Durability extends ItemAttribute {
 	}
 
 	@Override
-	public void onLoad(String data) {
+	public boolean onLoad(String data) {
 		try
 		{
 			if (data.endsWith("%"))
@@ -46,9 +46,11 @@ public class Durability extends ItemAttribute {
 		}
 		catch(NumberFormatException e)
 		{
-			//TODO Maybe another way to indicate a attribute failed to load? 
-			//Simple boolean return?
+			//TODO: Lets see if this works
+			return false;
 		}
+		//TODO: Lets see if this works
+		return true;
 	}
 	
 	@Override

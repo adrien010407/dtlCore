@@ -64,7 +64,7 @@ public abstract class ItemAttribute {
 	@Override
 	public String toString() { return serialize(); }
 	public abstract String serialize();
-	public abstract void onLoad(String data);
+	public abstract boolean onLoad(String data);
 
 	public boolean equals(ItemAttribute that) {
 		return key.equals(that.key);
@@ -216,9 +216,8 @@ public abstract class ItemAttribute {
 				}
 			}
 			
-			//if we got a valid attribute
-			if (result != null)
-				result.onLoad(value);
+			if (result != null && !result.onLoad(value))
+					return null;
 		}
 		return result;
 	}

@@ -29,8 +29,9 @@ public class Name extends ItemAttribute {
 	}
 
 	@Override
-	public void onLoad(String data) {
+	public boolean onLoad(String data) {
 		name = data.replace('&', '§');
+		return true;
 	}
 	
 	@Override

@@ -33,8 +33,9 @@ public class Amount extends ItemAttribute {
 	}
 
 	@Override
-	public void onLoad(String data) {
+	public boolean onLoad(String data) {
 		amount = Integer.parseInt(data);
+		return true;
 	}
 	
 	@Override
