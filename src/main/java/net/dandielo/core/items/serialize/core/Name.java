@@ -29,7 +29,7 @@ public class Name extends ItemAttribute {
 	}
 
 	@Override
-	public boolean onLoad(String data) {
+	public boolean deserialize(String data) {
 		name = data.replace('&', '§');
 		return true;
 	}

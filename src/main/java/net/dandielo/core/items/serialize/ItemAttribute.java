@@ -20,12 +20,10 @@ import org.bukkit.inventory.ItemStack;
  * @note Remember to always use the @Attribute annotation when creating and registering a attribute class. 
  */
 public abstract class ItemAttribute {
-	/* protected members */
 	protected final dItem item;
 	protected final String key;
 	protected final String sub;
 	
-	/* constructors */
 	protected ItemAttribute(dItem item, String key) { 
 		this(item, key, null);
 	}
@@ -35,53 +33,133 @@ public abstract class ItemAttribute {
 		this.sub = sub;
 	}
 	
-	/* Fighting with items */
+	/**
+	 * Called when the a result item is assembled.
+	 * @param item
+	 *   The result that will receive the data.
+	 * @param abstrac
+	 *   if <b>true</b> the item may contain additional data, not really connected with the item. 
+	 */
 	public void onAssign(ItemStack item, boolean abstrac) { }
+	
+	/**
+	 * Called when an items is analyzed to get all it's attributes.
+	 * @param item
+	 *   The item to be analyzed.
+	 * @return
+	 *   <b>true</b> if the item contains the given attribute.
+	 */
 	public boolean onRefactor(ItemStack item) { 
 		return false; 
 	}
 		
-	/* advanced interfaces */
+	/**
+	 * Called when the result item is assembled. 
+	 * <p>This function should be used by attributes that modify the NBT structure of an item, because such a item is almost always a
+	 * copy of the original. So that copy will be substituted with the original one after this function finishes.</p>  
+	 * @param item
+	 *   Then item that will receive the data.
+	 * @param abstrac
+	 *   if <b>true</> the item may contain additional data, not really connected with the item. 
+	 * @return
+	 *   The new item to be substituted.
+	 */
 	public ItemStack onNativeAssign(ItemStack item, boolean abstrac) {
 		onAssign(item, abstrac);
 		return item;
 	}
 	 
-	/* When we want to describe an item */
-	public void getDescription(List<String> result) {
+	/**
+	 * Should return additional information about the attribute, it's only used for debug information.
+	 * @param description
+	 *   A list where the description should be added.
+	 */
+	public void getDescription(List<String> description) {
 	}
 	
-	/* default operations */
+	/**
+	 * The attribute key. 
+	 * @return
+	 *   A string with the attribute general key.
+	 */
 	public String getKey() { return key; }
+	
+	/**
+	 * The attribute subkey.
+	 * @return
+	 *   The subkey of an attribute or null if it's a general attribute. //TODO change the name from general to whateva
+	 */
 	public String getSubkey() { return sub; }
 	
+	/**
+	 * The attributes description.
+	 * @return
+	 *   Returns the attributes {@code @Attribute} annotation, or null if not found. 
+	 */
 	public Attribute getInfo() {
-		//TODO maybe save it in this object for some reason?
 		return getClass().getAnnotation(Attribute.class);
 	}
 	
-	/* Serialization */
+	/**
+	 * Uses the {@code serialize} method to return a combination along with the key and subkey values. 
+	 */
 	@Override
-	public String toString() { return serialize(); }
+	public String toString() { 
+		return serialize(); 
+	}
+	
+	/**
+	 * Serializes the attribute.
+	 * @return
+	 *   The attributes string representation.
+	 */
 	public abstract String serialize();
-	public abstract boolean onLoad(String data);
+	
+	/**
+	 * Deserializes all data from the given string.
+	 * @param data
+	 *   The serialized item attribute data.
+	 * @return
+	 *   <b>true</b> if the serialization was successful.
+	 */
+	public abstract boolean deserialize(String data);
 
+	/**
+	 * Checks if both attributes are strict equal
+	 * @param that
+	 *   The second item.
+	 * @return
+	 *   <b>true</b> if equal.
+	 */
 	public boolean equals(ItemAttribute that) {
 		return key.equals(that.key);
 	}
+	
+	/**
+	 * Checks if both attributes are similar. 
+	 * <p>Allows for smooth differences in the attributes values.</p> 
+	 * @param that
+	 *   The second item.
+	 * @return
+	 *   <b>true</b> if similar.
+	 */
 	public boolean similar(ItemAttribute that) {
 		return equals(that);
 	}
 	
+	/**
+	 * Unlike the two other comparisons this one is strictly implemented to allow only one object of this key-subkey pairs in a 
+	 * HashSet or HashMap. So there are never two of the same attributes on one item.
+	 * <p>Only the <b>key</b> and <b>subkey</b> values are compared</p>
+	 */
 	@Override
-	@SuppressWarnings("all")
-	public final boolean equals(Object o) {
+	public final boolean equals(Object that) {
 		return (
-			o instanceof ItemAttribute 
-			&& key.equals(((ItemAttribute)o).key) 
+			that instanceof ItemAttribute 
+			&& key.equals(((ItemAttribute)that).key) 
 			&& (sub == null ? 
-				/* if */ ((ItemAttribute)o).sub == null 
-				/* else */ : sub.equals(((ItemAttribute)o).sub))
+				/* if */ ((ItemAttribute)that).sub == null 
+				/* else */ : sub.equals(((ItemAttribute)that).sub))
 		);
 	}
 	
@@ -90,11 +168,13 @@ public abstract class ItemAttribute {
 		return (key + (sub == null ? "" : "." + sub)).hashCode(); 
 	}
 
-	/* Static factory maps */
+	
+	/*
+	 * Static section of the ItemAttribute class, used to instantiate attributes in a proper way. 
+	 */
 	private static Map<String, Attribute> attributeKeys;
 	private static Map<Attribute, Class<? extends ItemAttribute>> attributeClasses;
 	
-	/* Static constructor */
 	static { 
 		attributeKeys = new HashMap<String, Attribute>();
 		attributeClasses = new HashMap<Attribute, Class<? extends ItemAttribute>>();
@@ -216,8 +296,8 @@ public abstract class ItemAttribute {
 				}
 			}
 			
-			if (result != null && !result.onLoad(value))
-					return null;
+			if (result != null && !result.deserialize(value))
+				result = null;
 		}
 		return result;
 	}

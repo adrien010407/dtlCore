@@ -31,7 +31,7 @@ public class Durability extends ItemAttribute {
 	}
 
 	@Override
-	public boolean onLoad(String data) {
+	public boolean deserialize(String data) {
 		try
 		{
 			if (data.endsWith("%"))
