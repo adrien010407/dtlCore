@@ -1,5 +1,8 @@
 package net.dandielo.core.items.serialize.core;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -7,7 +10,7 @@ import net.dandielo.core.items.dItem;
 import net.dandielo.core.items.serialize.Attribute;
 import net.dandielo.core.items.serialize.ItemAttribute;
 
-@Attribute(key = "n", name = "name")
+@Attribute(key = "n", name = "name", priority = 300)
 public class Name extends ItemAttribute {
 	private String name;
 	
@@ -49,5 +52,23 @@ public class Name extends ItemAttribute {
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(name);
 		item.setItemMeta(meta);
+	}
+	
+	public boolean extendedCheck(ItemAttribute attr)
+	{
+		Matcher match = Pattern.compile(name).matcher(((Name)attr).name);
+		return match.matches();
+	}
+	
+	@Override
+	public boolean similar(ItemAttribute attr)
+	{			
+		return equals(attr);
+	}
+	
+	@Override
+	public boolean equals(ItemAttribute attr)
+	{
+		return name.equals(((Name)attr).name);//item.hasFlag(Regex.class) ? extendedCheck(attr) : name.equals(((Name)attr).name);
 	}
 }

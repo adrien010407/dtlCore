@@ -46,20 +46,19 @@ public class Durability extends ItemAttribute {
 		}
 		catch(NumberFormatException e)
 		{
-			//TODO: Lets see if this works
 			return false;
 		}
-		//TODO: Lets see if this works
 		return true;
 	}
 	
 	@Override
 	public void onAssign(ItemStack item, boolean unused) {
-		if (item.getType().getMaxDurability() > 0)//TODO what now?;
-			
-		if (durabilityPercent >= 0.0)
-			durability = (short) (item.getType().getMaxDurability() * durabilityPercent); 
-		item.setDurability(durability);
+		if (item.getType().getMaxDurability() > 0)
+		{
+			if (durabilityPercent >= 0.0)
+				durability = (short) (item.getType().getMaxDurability() * durabilityPercent); 
+			item.setDurability(durability);
+		}
 	}
 	
 	@Override
