@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import net.dandielo.core.bukkit.NBTUtils;
 import net.dandielo.core.items.dItem;
 import net.dandielo.core.items.serialize.Attribute;
 import net.dandielo.core.items.serialize.ItemFlag;
@@ -125,12 +126,10 @@ public class Lore extends ItemFlag {
 		// Set this the raw way to avoid wiping other custom NBT data
 		// Thanks! ;) - NathanWolf
 		
-		//TODO: Add a NBT Editor class 
-//		ItemStack newItem = NBTUtils.addLore(item, lore);
-//		if (newItem != null) {
-//			return newItem;
-//		}
-		ItemStack newItem = null;
+		ItemStack newItem = NBTUtils.addLore(item, lore);
+		if (newItem != null) {
+			return newItem;
+		}
 		
 		// If that fails, then add to existing lore via Bukkit API
 		

@@ -11,8 +11,11 @@ import java.util.regex.Pattern;
 import net.dandielo.core.items.serialize.ItemAttribute;
 import net.dandielo.core.items.serialize.ItemFlag;
 import net.dandielo.core.items.serialize.core.Amount;
+import net.dandielo.core.items.serialize.core.Book;
 import net.dandielo.core.items.serialize.core.Durability;
 import net.dandielo.core.items.serialize.core.Name;
+import net.dandielo.core.items.serialize.core.Skull;
+import net.dandielo.core.items.serialize.core.StoredEnchant;
 import net.dandielo.core.items.serialize.flags.Lore;
 
 import org.bukkit.Material;
@@ -67,7 +70,7 @@ public class dItem {
 		deserialize(data);
 		
 		if (hasFlag(Lore.class))
-			getFlag(Lore.class, false).setValue(lore);
+			getFlag(Lore.class, false).setLore(lore);
 	}
 	
 	/**
@@ -176,7 +179,6 @@ public class dItem {
 		}
 		
 		//TODO: check if removing from the meta data the lore component it will preserve till this check.
-
 		Lore lore  = (Lore) ItemFlag.init(this, ".lore");
 		if(lore.onRefactor(item))
 			flags.add(lore); 
@@ -209,7 +211,7 @@ public class dItem {
 		List<ItemAttribute> secondPass = new ArrayList<ItemAttribute>();
 		for (ItemAttribute itemAttr : attributes)
 		{
-			if (itemAttr instanceof Name)// || itemAttr instanceof Skull || itemAttr instanceof StoredEnchant || itemAttr instanceof Book)
+			if (itemAttr instanceof Name || itemAttr instanceof Skull || itemAttr instanceof StoredEnchant || itemAttr instanceof Book)
 			{
 				firstPass.add(itemAttr);
 			} 
@@ -332,7 +334,7 @@ public class dItem {
 	 * @return
 	 */
 	public List<String> getLore() { 
-		return hasFlag(Lore.class) ? getFlag(Lore.class, false).getValue() 
+		return hasFlag(Lore.class) ? getFlag(Lore.class, false).getLore() 
 				/* else */: new ArrayList<String>(); 
 	}
 	

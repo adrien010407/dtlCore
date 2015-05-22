@@ -9,6 +9,19 @@
 	<craftbukkit.version>1.8-R0.1-SNAPSHOT</craftbukkit.version>
   </properties>
   
+	<distributionManagement>
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>deployment</id>
+			<name>dtl Repository</name>
+			<url>http://repo.dandielo.net/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository> 
+			<uniqueVersion>true</uniqueVersion>
+			<id>deployment</id>
+			<url>http://repo.dandielo.net/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
   
 	<!-- Repositories -->
 	<repositories>
