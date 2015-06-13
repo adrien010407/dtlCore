@@ -87,7 +87,7 @@ public class dItem {
 			result += ":" + materialData.getData();
 
 		for (ItemAttribute entry : attributes)
-			result += " " + entry.serialize();
+			result += " " + entry.toString();
 
 		for (ItemFlag flag : flags)
 			result += " " + flag.getKey();		
@@ -111,6 +111,8 @@ public class dItem {
 		material = Material.getMaterial(itemMaterial[0].toUpperCase());
 		if (itemMaterial.length > 1)
 			materialData = new MaterialData(material, Byte.parseByte(itemMaterial[1]));//material.getNewData(Byte.parseByte(itemMaterial[1]));
+		else
+			materialData = new MaterialData(material);
 		
 		if ( itemData.length == 1 ) return;
 
@@ -301,6 +303,18 @@ public class dItem {
 	public void setMaterial(Material material) { 
 		this.material = material;
 		this.materialData = new MaterialData(material);//material.getNewData((byte)0);
+	}
+
+	
+	/**
+	 * Sets a new material for the item. 
+	 * <p>This operation may remove attributes that are not compatible with the new material.</p> 
+	 * @param material
+	 *   The new material for the item.
+	 */
+	public void setMaterialData(MaterialData materialData) { 
+		this.material = materialData.getItemType();
+		this.materialData = materialData;
 	}
 
 	/**

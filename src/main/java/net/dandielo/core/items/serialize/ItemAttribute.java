@@ -325,4 +325,26 @@ public abstract class ItemAttribute {
 		for (String sub : attr.sub())
 			attributeKeys.put(attr.key() + "." + sub, attr);
 	}
+	
+	/**
+	 * Registers a new attribute to the system, should be done before Citizens2 loading.
+	 * @param clazz
+	 *     The attribute class that should be registered.
+	 * @throws AttributeException 
+	 * @throws InvalidDataNodeException
+	 */
+	public static void extendAttrKey(String key, Class<? extends ItemAttribute> clazz) 
+	{
+		if ( !clazz.isAnnotationPresent(Attribute.class) ) {
+			dtlCore.warning("Couldnt register the following attribute class: " + clazz.getSimpleName());
+			return;
+		}
+
+		Attribute attr = clazz.getAnnotation(Attribute.class);
+		attributeClasses.put(attr, clazz);
+
+		//create all key pairs
+		for (String sub : attr.sub())
+			attributeKeys.put(key + "." + sub, attr);
+	}
 }

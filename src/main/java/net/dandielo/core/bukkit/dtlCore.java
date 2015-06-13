@@ -25,6 +25,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import static net.dandielo.core.items.serialize.ItemAttribute.registerAttr;
+import static net.dandielo.core.items.serialize.ItemAttribute.extendAttrKey;
 import static net.dandielo.core.items.serialize.ItemFlag.registerFlag;
 
 public class dtlCore extends JavaPlugin {
@@ -52,11 +53,8 @@ public class dtlCore extends JavaPlugin {
 			info("Loading config files");
 			
 			info("Registering attributes and flags...");
-			registerAttr(GenericKnockback.class);
+			// Default attributes
 			registerAttr(StoredEnchant.class);
-			registerAttr(GenericDamage.class);
-			registerAttr(GenericHealth.class);
-			registerAttr(GenericSpeed.class);
 			registerAttr(LeatherColor.class);
 			registerAttr(Durability.class);
 			registerAttr(Enchants.class);
@@ -68,6 +66,12 @@ public class dtlCore extends JavaPlugin {
 			registerAttr(Book.class);
 			registerAttr(Name.class);
 			registerAttr(Map.class);
+			
+			// Attribute extensions
+			extendAttrKey("g", GenericKnockback.class);
+			extendAttrKey("g", GenericDamage.class);
+			extendAttrKey("g", GenericHealth.class);
+			extendAttrKey("g", GenericSpeed.class);
 
 			registerFlag(SplashPotion.class);
 			registerFlag(Lore.class);

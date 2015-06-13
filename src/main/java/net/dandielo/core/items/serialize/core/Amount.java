@@ -11,11 +11,11 @@ import net.dandielo.core.items.serialize.ItemAttribute;
  * @author dandielo
  *
  */
-@Attribute(key = "a", name = "Amount")
+@Attribute(key = "a", name = "Amount", required = true, priority = 5)
 public class Amount extends ItemAttribute {
 	private int amount;
 	
-	protected Amount(dItem item, String key) {
+	public Amount(dItem item, String key) {
 		super(item, key);
 	}
 	

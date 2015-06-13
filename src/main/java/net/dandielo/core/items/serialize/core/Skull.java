@@ -12,7 +12,7 @@ import net.dandielo.core.items.serialize.ItemAttribute;
 public class Skull  extends ItemAttribute {
 	private String owner;
 	
-	protected Skull(dItem item, String key) {
+	public Skull(dItem item, String key) {
 		super(item, key);
 	}
 
