@@ -31,8 +31,8 @@ public class dItem {
 	private Material material;
 	private MaterialData materialData;
 	
-	private Set<ItemFlag> flags = new HashSet<ItemFlag>();;
-	private Set<ItemAttribute> attributes = new HashSet<ItemAttribute>();;
+	protected Set<ItemFlag> flags = new HashSet<ItemFlag>();;
+	protected Set<ItemAttribute> attributes = new HashSet<ItemAttribute>();;
 	
 	/**
 	 * Creates a abstract item.
@@ -178,7 +178,7 @@ public class dItem {
 				flags.add(iFlag);
 		}
 		
-		//TODO: check if removing from the meta data the lore component it will preserve till this check.
+		//TODO: check if removing from the metadata the lore component it will preserve till this check. ?? WTF?!
 		Lore lore  = (Lore) ItemFlag.init(this, ".lore");
 		if(lore.onRefactor(item))
 			flags.add(lore); 
@@ -724,6 +724,58 @@ public class dItem {
 		}
 		return equals;
 	} 
+	
+	public final int priorityMatch(dItem that)
+	{
+		int priority = 0;
+		
+		if (material.getMaxDurability() == 0)
+		{
+			if (material.equals(Material.AIR))
+			{
+				priority += materialData.equals(that.materialData) ? 120 : -2;
+			}
+			else 
+			{
+				priority += materialData.equals(that.materialData) &&
+						material.equals(that.material) ? 140 : -2; 
+			}
+		}
+		else
+		{
+			if (!material.equals(Material.AIR))
+				priority += material.equals(that.material) ? 130 : -2;	
+		}
+		
+		//now a if block to not make thousands of not needed checks 
+		if ( priority < 0 ) return priority;
+
+		for (ItemAttribute thisItemAttr : attributes)
+		{
+			if (!thisItemAttr.getInfo().standalone())
+			{
+				for (ItemAttribute thatItemAttr : that.attributes)
+				{
+					if (thisItemAttr.getClass().equals(thatItemAttr.getClass()) && thisItemAttr.equals(thatItemAttr))
+						priority += thisItemAttr.getInfo().priority();
+				}
+			}
+		}
+
+		for (ItemFlag thisItemFlag : flags)
+		{
+			if (!thisItemFlag.getInfo().standalone())
+			{
+				for (ItemFlag thatItemFlag : that.flags)
+				{
+					if (thisItemFlag.getClass().equals(thatItemFlag.getClass()) && thisItemFlag.equals(thatItemFlag))
+						priority += thisItemFlag.getInfo().priority();
+				}
+			}
+		}
+
+		return priority;
+	}
 	
 	/**
 	 * Uses the {@code serialize} method.

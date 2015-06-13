@@ -62,7 +62,7 @@ public abstract class ItemFlag {
 	 * @param abstrac 
 	 *     tells the method if the item is just displayed in the traders inventory or if it's the users end-item he bought
 	 */
-	public abstract void onAssign(ItemStack item, boolean abstrac);
+	public void onAssign(ItemStack item, boolean abstrac) { }
 	
 	/**
 	 * Called when trying to get flag data information from the given item. If no valid data for this flag is found then it throws an exception.

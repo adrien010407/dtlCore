@@ -104,8 +104,8 @@ public abstract class ItemAttribute {
 	 * Uses the {@code serialize} method to return a combination along with the key and subkey values. 
 	 */
 	@Override
-	public String toString() { 
-		return serialize(); 
+	public final String toString() { 
+		return key + (sub != null ? "." + sub : "") + ":" + serialize(); 
 	}
 	
 	/**

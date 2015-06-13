@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import net.dandielo.core.items.serialize.flags.Lore;
+
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
@@ -453,9 +455,9 @@ public class NBTUtils {
 		for ( int j = 0 ; j < (Integer) size.invoke(list) ; ++j )
 		{
 //			System.out.print("---- " + toString.invoke(get.invoke(list, j)) + " ----");
-//			if ( !getTagName(get.invoke(list, j)).equals("dtltrader") &&
-//					!(((String) toString.invoke(get.invoke(list, j))).startsWith(Lore.traderLorePrefix)) )
-//				result.add((String) toString.invoke(get.invoke(list, j)));
+			if ( !getTagName(get.invoke(list, j)).equals("dtltrader") &&
+					!(((String) toString.invoke(get.invoke(list, j))).startsWith(Lore.dCoreLorePrefix)) )
+				result.add((String) toString.invoke(get.invoke(list, j)));
 		}
 
 		//return the new item;
@@ -490,10 +492,10 @@ public class NBTUtils {
 			return false;
 
 		//search for trader lores
-//		for ( int j = 0 ; j < (Integer) size.invoke(list) ; ++j )
-//			if ( getTagName(get.invoke(list, j)).equals("dtltrader") || 
-//					((String) toString.invoke(get.invoke(list, j))).startsWith(Lore.traderLorePrefix) )
-//				return true;
+		for ( int j = 0 ; j < (Integer) size.invoke(list) ; ++j )
+			if ( getTagName(get.invoke(list, j)).equals("dtltrader") || 
+					((String) toString.invoke(get.invoke(list, j))).startsWith(Lore.dCoreLorePrefix) )
+				return true;
 
 		//return false as no lores was found;
 		return false;
@@ -506,7 +508,7 @@ public class NBTUtils {
 
 //	public static ItemStack cleanItem(ItemStack i)
 //	{
-////		return ItemUtils.createStockItem(i).getItem(true);
+//		return ItemUtils.createStockItem(i).getItem(true);
 //	}
 
 	static String getTagName(Object tag) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
