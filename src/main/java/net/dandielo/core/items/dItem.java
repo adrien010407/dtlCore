@@ -171,14 +171,18 @@ public class dItem {
 		for (ItemAttribute iAttr : ItemAttribute.initAllAttributes(this))
 		{
 			if (iAttr.onRefactor(item))
+			{
 				attributes.add(iAttr);
+			}
 		}
 		for (ItemFlag iFlag : ItemFlag.getAllFlags(item))
 		{
 			if(iFlag.onRefactor(item))
-				flags.add(iFlag);
+			{
+				flags.add(iFlag);	
+			}
 		}
-		
+
 		//TODO: check if removing from the metadata the lore component it will preserve till this check. ?? WTF?!
 		Lore lore  = (Lore) ItemFlag.init(this, ".lore");
 		if(lore.onRefactor(item))

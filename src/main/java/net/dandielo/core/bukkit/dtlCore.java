@@ -52,25 +52,25 @@ public class dtlCore extends JavaPlugin {
 			info("Loading config files");
 			
 			info("Registering attributes and flags...");
-			registerAttr(Durability.class);
-			registerAttr(Amount.class);
-			registerAttr(Book.class);
-			registerAttr(Banner.class);
-			registerAttr(Enchants.class);
-			registerAttr(Firework.class);
+			registerAttr(GenericKnockback.class);
+			registerAttr(StoredEnchant.class);
 			registerAttr(GenericDamage.class);
 			registerAttr(GenericHealth.class);
-			registerAttr(GenericKnockback.class);
 			registerAttr(GenericSpeed.class);
 			registerAttr(LeatherColor.class);
-			registerAttr(Map.class);
-			registerAttr(Name.class);
+			registerAttr(Durability.class);
+			registerAttr(Enchants.class);
+			registerAttr(Firework.class);
+			registerAttr(Amount.class);
+			registerAttr(Banner.class);
 			registerAttr(Potion.class);
 			registerAttr(Skull.class);
-			registerAttr(StoredEnchant.class);
-			
-			registerFlag(Lore.class);
+			registerAttr(Book.class);
+			registerAttr(Name.class);
+			registerAttr(Map.class);
+
 			registerFlag(SplashPotion.class);
+			registerFlag(Lore.class);
 			
 			info("Enabled");
 		}

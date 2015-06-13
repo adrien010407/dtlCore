@@ -174,7 +174,7 @@ public abstract class ItemFlag {
 	 * @throws AttributeInvalidClassException 
 	 * @throws AttributeInvalidValueException 
 	 */
-	public static ItemFlag init(dItem stockItem, String key)
+	public static ItemFlag init(dItem item, String key)
 	{
 		//Search for the attribute
 		Attribute attr = null;
@@ -185,9 +185,7 @@ public abstract class ItemFlag {
 		try 
 		{
 			//get the attribute declaring class
-			ItemFlag itemflag = flags.get(attr).getConstructor(String.class).newInstance(key);
-			//assoc the item
-			itemflag.item = stockItem;
+			ItemFlag itemflag = flags.get(attr).getConstructor(dItem.class, String.class).newInstance(item, key);
 			//returning the initialized attribute
 			return itemflag;
 		} 
