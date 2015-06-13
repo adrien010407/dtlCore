@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import net.dandielo.core.items.serialize.ItemAttribute;
 import net.dandielo.core.items.serialize.ItemFlag;
 import net.dandielo.core.items.serialize.core.Amount;
+import net.dandielo.core.items.serialize.core.Banner;
 import net.dandielo.core.items.serialize.core.Book;
 import net.dandielo.core.items.serialize.core.Durability;
 import net.dandielo.core.items.serialize.core.Name;
@@ -194,24 +195,39 @@ public class dItem {
 	} 
 	
 	/**
+	 * Create a native item stack from all components. 
+	 * @return
+	 *   The new ItemStack item.
+	 */
+	public ItemStack getItem(boolean abstrac) {
+		return getItem(abstrac, null);
+	} 
+	
+	/**
 	 * Create a native item stack from all components.
 	 * @param abstrac
 	 *   Specify if the item should be returned with abstract data, that normal wouldn't be there. For example debug data.
 	 * @return
 	 *   The new ItemStack item with additional data.
 	 */
-	public ItemStack getItem(boolean abstrac) {
+	public ItemStack getItem(boolean abstrac, List<String> lore) {
 		ItemStack resultItem = materialData.toItemStack();
 		
 		//add the lore as the first one
-		if ( hasFlag(Lore.class) )
+		if (lore != null)
+			resultItem.getItemMeta().setLore(lore);
+		else if (hasFlag(Lore.class))
 			getFlag(Lore.class, false).onAssign(resultItem, abstrac);
 
 		List<ItemAttribute> firstPass = new ArrayList<ItemAttribute>();
 		List<ItemAttribute> secondPass = new ArrayList<ItemAttribute>();
 		for (ItemAttribute itemAttr : attributes)
 		{
-			if (itemAttr instanceof Name || itemAttr instanceof Skull || itemAttr instanceof StoredEnchant || itemAttr instanceof Book)
+			if (itemAttr instanceof Name           || 
+				itemAttr instanceof Skull          || 
+				itemAttr instanceof StoredEnchant  || 
+				itemAttr instanceof Book           || 
+				itemAttr instanceof Banner)
 			{
 				firstPass.add(itemAttr);
 			} 

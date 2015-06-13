@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.dandielo.core.bukkit.dtlCore;
 import net.dandielo.core.exceptions.InvalidAttributeValueException;
 import net.dandielo.core.items.dItem;
 import net.dandielo.core.items.serialize.flags.Lore;
@@ -163,25 +164,6 @@ public abstract class ItemFlag {
 	}
 	
 	/**
-	 * Registers a new flag to the system, should be done before Citizens2 loading.
-	 * @param clazz
-	 *     The falg class that should be registered.
-	 * @throws InvalidDataNodeException
-	 */
-	public static void registerFlag(Class<? extends ItemFlag> clazz)
-	{
-	//	if ( !clazz.isAnnotationPresent(Attribute.class) )
-	//		throw new AttributeInvalidClassException();
-		
-		Attribute attr = clazz.getAnnotation(Attribute.class);
-
-		//debug low
-	//	dB.low("Registering flag \'", ChatColor.GREEN, attr.name(), ChatColor.RESET, "\' with key: ", attr.key());
-		
-		flags.put(attr, clazz);
-	}
-	
-	/**
 	 * Creates a flag based on the key. 
 	 * @param stockItem
 	 *     The item associated with the flag
@@ -268,5 +250,22 @@ public abstract class ItemFlag {
 			result += ", " + ChatColor.YELLOW + attr.name() + ChatColor.RESET;
 		
 		return ChatColor.WHITE + "[" + result.substring(2) + ChatColor.WHITE + "]";
+	}
+	
+	/**
+	 * Registers a new flag to the system, should be done before Citizens2 loading.
+	 * @param clazz
+	 *     The falg class that should be registered.
+	 * @throws InvalidDataNodeException
+	 */
+	public static void registerFlag(Class<? extends ItemFlag> clazz)
+	{
+		if ( !clazz.isAnnotationPresent(Attribute.class) ) {
+			dtlCore.warning("Couldnt register the following attribute class: " + clazz.getSimpleName());
+			return;
+		}
+		
+		Attribute attr = clazz.getAnnotation(Attribute.class);	
+		flags.put(attr, clazz);
 	}
 }

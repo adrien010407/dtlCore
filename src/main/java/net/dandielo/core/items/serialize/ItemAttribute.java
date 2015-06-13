@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.dandielo.core.bukkit.dtlCore;
 import net.dandielo.core.items.dItem;
 
 import org.bukkit.inventory.ItemStack;
@@ -300,5 +301,28 @@ public abstract class ItemAttribute {
 				result = null;
 		}
 		return result;
+	}
+	
+	/**
+	 * Registers a new attribute to the system, should be done before Citizens2 loading.
+	 * @param clazz
+	 *     The attribute class that should be registered.
+	 * @throws InvalidDataNodeException
+	 */
+	public static void registerAttr(Class<? extends ItemAttribute> clazz) 
+	{
+		if ( !clazz.isAnnotationPresent(Attribute.class) ) {
+			dtlCore.warning("Couldnt register the following attribute class: " + clazz.getSimpleName());
+			return;
+		}
+
+		Attribute attr = clazz.getAnnotation(Attribute.class);
+
+		attributeClasses.put(attr, clazz);
+
+		//create all key pairs
+		attributeKeys.put(attr.key(), attr);
+		for (String sub : attr.sub())
+			attributeKeys.put(attr.key() + "." + sub, attr);
 	}
 }
