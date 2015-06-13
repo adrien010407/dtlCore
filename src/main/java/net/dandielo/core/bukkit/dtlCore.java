@@ -49,9 +49,6 @@ public class dtlCore extends JavaPlugin {
 			//set the console sender
 			console = getServer().getConsoleSender();
 			
-			//init plugin settings
-			saveDefaultConfig();
-			
 			info("Loading config files");
 			
 			info("Registering attributes and flags...");
