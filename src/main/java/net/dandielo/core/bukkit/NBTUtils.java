@@ -446,9 +446,9 @@ public class NBTUtils {
 		else
 			list = NBTTagListClazz.newInstance();
 
-		System.out.print("ID: " + getTypeID.invoke(NBTTagStringClazz.newInstance()));
-		System.out.print(result);
-		System.out.print(size.invoke(list));
+//		System.out.print("ID: " + getTypeID.invoke(NBTTagStringClazz.newInstance()));
+//		System.out.print(result);
+//		System.out.print(size.invoke(list));
 
 
 		//get the specific and normal lore!

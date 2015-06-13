@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.dandielo.core.bukkit.NBTUtils;
 import net.dandielo.core.items.serialize.ItemAttribute;
 import net.dandielo.core.items.serialize.ItemFlag;
 import net.dandielo.core.items.serialize.core.Amount;
@@ -221,7 +222,7 @@ public class dItem {
 		
 		//add the lore as the first one
 		if (lore != null)
-			resultItem.getItemMeta().setLore(lore);
+			resultItem = NBTUtils.addLore(resultItem, lore);
 		else if (hasFlag(Lore.class))
 			getFlag(Lore.class, false).onAssign(resultItem, abstrac);
 
@@ -264,7 +265,7 @@ public class dItem {
 	 *   Amount of the item,
 	 */
 	public int getAmount() { 
-		return getAttribute(Amount.class, true).getValue(); 
+		return getAttribute(Amount.class, true).getAmount(); 
 	}
 	
 	/**
@@ -273,7 +274,7 @@ public class dItem {
 	 *   The amount to set.
 	 */
 	public void setAmount(int amount) {
-		getAttribute(Amount.class, true).setValue(amount);
+		getAttribute(Amount.class, true).setAmount(amount);
 	}
 	
 	/**
@@ -499,7 +500,7 @@ public class dItem {
 		while(it.hasNext())
 		{
 			temp = it.next();
-			if (temp.getKey() == gkey)
+			if (temp.getKey().equals(gkey))
 				result.add(temp);
 		}
 		return result;

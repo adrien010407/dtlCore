@@ -30,7 +30,7 @@ import static net.dandielo.core.items.serialize.ItemFlag.registerFlag;
 
 public class dtlCore extends JavaPlugin {
 	//console prefix
-		public static final String PREFIX = "[dtlTraders]" + ChatColor.WHITE; 
+		public static final String PREFIX = "[dtlCore]" + ChatColor.WHITE; 
 		
 		//bukkit resources
 		private static ConsoleCommandSender console;
