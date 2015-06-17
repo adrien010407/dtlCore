@@ -8,7 +8,7 @@ import net.dandielo.core.items.dItem;
 import net.dandielo.core.items.serialize.Attribute;
 import net.dandielo.core.items.serialize.ItemFlag;
 
-@Attribute(name="SplashPotion", key = ".splash", items = {Material.POTION})
+@Attribute(name="SplashPotion", key = ".splash", items = {Material.POTION}, priority = 5)
 public class SplashPotion extends ItemFlag {
 
 	public SplashPotion(dItem item, String key)

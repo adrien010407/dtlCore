@@ -178,7 +178,7 @@ public class dItem {
 				attributes.add(iAttr);
 			}
 		}
-		for (ItemFlag iFlag : ItemFlag.getAllFlags(item))
+		for (ItemFlag iFlag : ItemFlag.getAllFlags(this))
 		{
 			if(iFlag.onRefactor(item))
 			{

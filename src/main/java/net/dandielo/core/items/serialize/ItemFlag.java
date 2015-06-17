@@ -135,7 +135,7 @@ public abstract class ItemFlag {
 	 * @return
 	 *     A list of each flag instance
 	 */
-	public static List<ItemFlag> getAllFlags(ItemStack item)
+	public static List<ItemFlag> getAllFlags(dItem item)
 	{
 		//create the list holding all flag instances
 		List<ItemFlag> result = new ArrayList<ItemFlag>();
@@ -143,16 +143,15 @@ public abstract class ItemFlag {
 		{
 			//we don't want the lore flag in here
 			if ( flag.getValue().equals(Lore.class) ) continue;
-
 			Attribute attrInfo = flag.getKey();
 			
 			//check if we need this flag
-			if (attrInfo.required() || Arrays.binarySearch(attrInfo.items(), item.getType()) >= 0 ||
+			if (attrInfo.required() || Arrays.binarySearch(attrInfo.items(), item.getMaterial()) >= 0 ||
 					(attrInfo.items().length == 0 && !attrInfo.standalone()))
 			{
 				try 
 				{
-					ItemFlag iFlag = flag.getValue().getConstructor(String.class).newInstance(flag.getKey().key());
+					ItemFlag iFlag = flag.getValue().getConstructor(dItem.class, String.class).newInstance(item, flag.getKey().key());
 					result.add(iFlag);
 				} 
 				catch (Exception e)
@@ -206,7 +205,7 @@ public abstract class ItemFlag {
 	 * @throws AttributeInvalidClassException 
 	 * @throws AttributeInvalidValueException 
 	 */
-	public static ItemFlag init(dItem stockItem, Class<? extends ItemFlag> clazz)
+	public static ItemFlag init(dItem item, Class<? extends ItemFlag> clazz)
 	{
 		//Search for the attribute
 		Attribute attr = clazz.getAnnotation(Attribute.class);
@@ -214,9 +213,9 @@ public abstract class ItemFlag {
 		try 
 		{
 			//get the attribute declaring class
-			ItemFlag itemflag = clazz.getConstructor(dItem.class, String.class).newInstance(attr.key());
+			ItemFlag itemflag = clazz.getConstructor(dItem.class, String.class).newInstance(item, attr.key());
 			//assoc the item
-			itemflag.item = stockItem;
+			//itemflag.item = stockItem;
 			//returning the initialized attribute
 			return itemflag;
 		} 
@@ -259,7 +258,7 @@ public abstract class ItemFlag {
 	public static void registerFlag(Class<? extends ItemFlag> clazz)
 	{
 		if ( !clazz.isAnnotationPresent(Attribute.class) ) {
-			dtlCore.warning("Couldnt register the following attribute class: " + clazz.getSimpleName());
+			dtlCore.warning("Couldnt register the following flag class: " + clazz.getSimpleName());
 			return;
 		}
 		
