@@ -2,6 +2,6 @@ name: dtlCore
 main: net.dandielo.core.bukkit.dtlCore
 depend: []
 soft-depend: []
-version: 1.0.1
+version: 1.0.1-beta
 description: >
              Core plugin for all dtlProjects. 
