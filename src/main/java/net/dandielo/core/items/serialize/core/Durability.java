@@ -8,11 +8,13 @@ import net.dandielo.core.items.serialize.ItemAttribute;
 
 @Attribute(key = "d", name = "Durability")
 public class Durability extends ItemAttribute {
-	private double durabilityPercent; 
+	private short durabilityPercent; 
 	private short durability;
 
 	public Durability(dItem item, String key) {
 		super(item, key);
+		durabilityPercent = -1;
+		durability = 0;
 	}
 	
 	public short getValue() {
@@ -25,8 +27,8 @@ public class Durability extends ItemAttribute {
 
 	@Override
 	public String serialize() {
-		if (durabilityPercent >= 0.0)
-			return String.format("%.0f%%", durabilityPercent * 100);
+		if (durabilityPercent >= -1)
+			return String.format("%2.0f%%", durabilityPercent * 100);
 		return String.valueOf(durability);
 	}
 
@@ -36,8 +38,8 @@ public class Durability extends ItemAttribute {
 		{
 			if (data.endsWith("%"))
 			{
-				durabilityPercent = Integer.parseInt(data.substring(0, data.length() - 1)) / 100.0;
-				durability = (short) (item.getItem(false).getType().getMaxDurability() * durabilityPercent);
+				durabilityPercent = Short.parseShort(data.substring(0, data.length() - 1));
+				durability = (short) (item.getItem(false).getType().getMaxDurability() * durabilityPercent / 100.0);
 			}
 			else
 			{
@@ -55,8 +57,8 @@ public class Durability extends ItemAttribute {
 	public void onAssign(ItemStack item, boolean unused) {
 		if (item.getType().getMaxDurability() > 0)
 		{
-			if (durabilityPercent >= 0.0)
-				durability = (short) (item.getType().getMaxDurability() * durabilityPercent); 
+			if (durabilityPercent > -1) 
+				durability = (short) (item.getType().getMaxDurability() * ((double)durabilityPercent / 100.0)); 
 			item.setDurability(durability);
 		}
 	}
