@@ -42,7 +42,7 @@ public class Skull  extends ItemAttribute {
 		if (!(item.getItemMeta() instanceof SkullMeta)) return false;
 
 		SkullMeta meta = (SkullMeta) item.getItemMeta();
-		meta.setOwner(owner);
+		owner = meta.getOwner();
 		item.setItemMeta(meta);
 		return true;
 	}
