@@ -28,7 +28,7 @@ public class Durability extends ItemAttribute {
 	@Override
 	public String serialize() {
 		if (durabilityPercent >= -1)
-			return String.format("%2.0f%%", durabilityPercent * 100);
+			return String.format("%d%%", durabilityPercent);
 		return String.valueOf(durability);
 	}
 
