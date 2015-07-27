@@ -37,14 +37,14 @@ public class Banner extends ItemAttribute {
 	//
 	@Override
 	public String serialize() {
-		String result = "";
+		String result = "unused";
 		for (Pattern pattern : patterns)
 		{
 			Color rgb = pattern.getColor().getColor();
 			String colorString = rgb.getRed() + "." + rgb.getGreen() + "." + rgb.getBlue();
 			result += "," + pattern.getPattern().getIdentifier() + "@" + colorString;
 		}
-		return result.substring(1);
+		return result;
 	}
 
 	@Override
@@ -52,17 +52,20 @@ public class Banner extends ItemAttribute {
 		String[] arrayData = data.split(",");
 		for (String strPattern : arrayData)
 		{
-			String[] patternData = strPattern.split("@");
-			String[] colorData = patternData[1].split(".");
-			Color color = Color.fromRGB(
-					  Integer.parseInt(colorData[0]) //red
-					, Integer.parseInt(colorData[1]) //green
-					, Integer.parseInt(colorData[2]) //blue
-			);
-			patterns.add(new Pattern(
-					DyeColor.getByColor(color), 
-					PatternType.getByIdentifier(patternData[0].toLowerCase())
-			));
+			if (!strPattern.equals("unused"))
+			{
+				String[] patternData = strPattern.split("@");
+				String[] colorData = patternData[1].split(".");
+				Color color = Color.fromRGB(
+						  Integer.parseInt(colorData[0]) //red
+						, Integer.parseInt(colorData[1]) //green
+						, Integer.parseInt(colorData[2]) //blue
+				);
+				patterns.add(new Pattern(
+						DyeColor.getByColor(color), 
+						PatternType.getByIdentifier(patternData[0].toLowerCase())
+				));
+			}
 		}
 		return true;
 	}
