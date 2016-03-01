@@ -8,7 +8,7 @@ import net.dandielo.core.items.serialize.ItemAttribute;
 
 @Attribute(key = "d", name = "Durability")
 public class Durability extends ItemAttribute {
-	private short durabilityPercent; 
+	private double durabilityPercent; 
 	private short durability;
 
 	public Durability(dItem item, String key) {
@@ -28,7 +28,7 @@ public class Durability extends ItemAttribute {
 	@Override
 	public String serialize() {
 		if (durabilityPercent >= -1)
-			return String.format("%d%%", durabilityPercent);
+			return String.format("%.0f%%", durabilityPercent * 100);
 		return String.valueOf(durability);
 	}
 
@@ -38,8 +38,8 @@ public class Durability extends ItemAttribute {
 		{
 			if (data.endsWith("%"))
 			{
-				durabilityPercent = Short.parseShort(data.substring(0, data.length() - 1));
-				durability = (short) (item.getItem(false).getType().getMaxDurability() * durabilityPercent / 100.0);
+				durabilityPercent = Integer.parseInt(data.substring(0, data.length() - 1)) / 100.0;
+				durability = (short) (item.getItem(false).getType().getMaxDurability() * durabilityPercent);
 			}
 			else
 			{

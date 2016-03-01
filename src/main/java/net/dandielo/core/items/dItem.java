@@ -766,20 +766,21 @@ public class dItem {
 		
 		if (material.getMaxDurability() == 0)
 		{
-			if (material.equals(Material.AIR))
+			if (!material.equals(Material.AIR))
 			{
-				priority += materialData.equals(that.materialData) ? 120 : -2;
+				priority += materialData.equals(that.materialData) ? 130 : -2;
 			}
 			else 
 			{
-				priority += materialData.equals(that.materialData) &&
-						material.equals(that.material) ? 140 : -2; 
+				priority += this.getDurability() == that.getDurability() ? 120 : -2;
 			}
 		}
 		else
 		{
 			if (!material.equals(Material.AIR))
-				priority += material.equals(that.material) ? 130 : -2;	
+			{
+				priority += material.equals(that.material) && materialData.equals(that.materialData) ? 130 : -2;
+			}
 		}
 		
 		//now a if block to not make thousands of not needed checks 
