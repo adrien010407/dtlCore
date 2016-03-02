@@ -55,7 +55,7 @@ public class Banner extends ItemAttribute {
 			if (!strPattern.equals("unused"))
 			{
 				String[] patternData = strPattern.split("@");
-				String[] colorData = patternData[1].split(".");
+				String[] colorData = patternData[1].split("\\.");
 				Color color = Color.fromRGB(
 						  Integer.parseInt(colorData[0]) //red
 						, Integer.parseInt(colorData[1]) //green
@@ -64,7 +64,8 @@ public class Banner extends ItemAttribute {
 				patterns.add(new Pattern(
 						DyeColor.getByColor(color), 
 						PatternType.getByIdentifier(patternData[0].toLowerCase())
-				));
+					)
+				);
 			}
 		}
 		return true;
