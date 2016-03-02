@@ -17,8 +17,10 @@ import net.dandielo.core.items.serialize.core.Name;
 import net.dandielo.core.items.serialize.core.Potion;
 import net.dandielo.core.items.serialize.core.Skull;
 import net.dandielo.core.items.serialize.core.StoredEnchant;
+import net.dandielo.core.items.serialize.flags.HideFlags;
 import net.dandielo.core.items.serialize.flags.Lore;
 import net.dandielo.core.items.serialize.flags.SplashPotion;
+import net.dandielo.core.items.serialize.flags.UnbreakableFlag;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
@@ -57,6 +59,7 @@ public class dtlCore extends JavaPlugin {
 			registerAttr(StoredEnchant.class);
 			registerAttr(LeatherColor.class);
 			registerAttr(Durability.class);
+			registerAttr(HideFlags.class);
 			registerAttr(Enchants.class);
 			registerAttr(Firework.class);
 			registerAttr(Amount.class);
@@ -73,6 +76,7 @@ public class dtlCore extends JavaPlugin {
 			extendAttrKey("g", GenericHealth.class);
 			extendAttrKey("g", GenericSpeed.class);
 
+			registerFlag(UnbreakableFlag.class);
 			registerFlag(SplashPotion.class);
 			registerFlag(Lore.class);
 			
