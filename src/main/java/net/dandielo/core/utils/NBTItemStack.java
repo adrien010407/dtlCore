@@ -14,19 +14,24 @@ public class NBTItemStack extends NBTReader {
 	
 	public NBTItemStack(ItemStack item) {
 		super(item);
-		
-		// Get the item "display" compound
-		if (!this.hasKey("display"))
+	}
+	
+	private NBTReader getDisplayTag() 
+	{
+		if (!this.hasKey("display") || displayCompound == null)
+		{
 			this.setTag("display", new NBTTagCompound());
-		displayCompound = this.getTagReader("display");
+			displayCompound = this.getTagReader("display");
+		}
+		return displayCompound;
 	}
 	
 	public List<String> getLore()
 	{
 		ArrayList<String> result = new ArrayList<String>();
-		if (displayCompound.hasKeyOfType("Lore", NBTTagType.LIST))
+		if (getDisplayTag().hasKeyOfType("Lore", NBTTagType.LIST))
 		{
-			NBTReader lore = displayCompound.getListReader("Lore", NBTTagType.STRING);
+			NBTReader lore = getDisplayTag().getListReader("Lore", NBTTagType.STRING);
 			for (int i = 0; i < lore.getListSize(); ++i)
 				result.add(lore.getStringAt(i));
 		}
@@ -35,10 +40,10 @@ public class NBTItemStack extends NBTReader {
 	
 	public void setLore(List<String> list)
 	{
-		if (!displayCompound.hasKeyOfType("Lore", NBTTagType.LIST))
-			displayCompound.setTag("Lore", new NBTTagList());
+		if (!getDisplayTag().hasKeyOfType("Lore", NBTTagType.LIST))
+			getDisplayTag().setTag("Lore", new NBTTagList());
 
-		NBTReader lore = displayCompound.getListReader("Lore", NBTTagType.STRING);
+		NBTReader lore = getDisplayTag().getListReader("Lore", NBTTagType.STRING);
 		for (String line : list)
 			lore.addString(line);
 	}
@@ -46,12 +51,12 @@ public class NBTItemStack extends NBTReader {
 	// Item specific NBT methods
 	public String getName()
 	{
-		return displayCompound.getString("Name");
+		return getDisplayTag().getString("Name");
 	}
 	
 	public void setName(String name)
 	{
-		displayCompound.setString("Name", name);
+		getDisplayTag().setString("Name", name);
 	}
 	
 	public byte getCount() 
@@ -67,5 +72,13 @@ public class NBTItemStack extends NBTReader {
 	public String getID()
 	{
 		return this.getString("id");
+	}
+
+	public boolean isUnbreakable() {
+		return this.hasKey("Unbreakable") ? this.getBoolean("Unbreakable") : false;
+	}
+	
+	public void setUnbreakable(boolean value) {
+		this.setBoolean("Unbreakable", value);
 	}
 }

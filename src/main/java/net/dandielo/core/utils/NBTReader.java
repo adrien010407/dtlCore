@@ -42,7 +42,7 @@ public class NBTReader {
 	{
 		objectType = ObjectType.Item;
 		object = CraftItemStack.asNMSCopy(item);
-		
+
 		if (asNativeItemStack().getTag() == null)
 			asNativeItemStack().setTag(new NBTTagCompound());
 	}
@@ -180,6 +180,18 @@ public class NBTReader {
 	public void setString(String key, String value)
 	{
 		asNBTTagCompound().setString(key, value);
+	}
+	
+	public void setByte(String key, byte value) {
+		asNBTTagCompound().setByte(key, value);
+	}
+
+	public void setInt(String key, int value) {
+		asNBTTagCompound().setInt(key, value);
+	}
+
+	public void setBoolean(String key, boolean value) {
+		asNBTTagCompound().setBoolean(key, value);
 	}
 	
 	// Reader creation
