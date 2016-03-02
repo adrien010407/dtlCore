@@ -423,8 +423,11 @@ public class dItem {
 	 */
 	public void addAttribute(String key, String value) { 
 		ItemAttribute attribute = ItemAttribute.init(this, key, value);
-		attributes.remove(attribute);
-		attributes.add(attribute);
+		if (attribute != null)
+		{
+			attributes.remove(attribute);
+			attributes.add(attribute);
+		}
 	}
 	
 	/**
