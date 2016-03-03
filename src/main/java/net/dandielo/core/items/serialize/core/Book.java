@@ -173,11 +173,11 @@ public class Book extends ItemAttribute {
 	@Override
 	public boolean similar(ItemAttribute that)
 	{
-		return equals(that);
+		return same(that);
 	}
 	
 	@Override
-	public boolean equals(ItemAttribute thato)
+	public boolean same(ItemAttribute thato)
 	{
 		if (!(thato instanceof Book)) return false;
 		Book that = (Book) thato;

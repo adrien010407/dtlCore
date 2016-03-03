@@ -96,7 +96,7 @@ public class StoredEnchant extends ItemAttribute {
 	}
 
 	@Override
-	public boolean equals(ItemAttribute data)
+	public boolean same(ItemAttribute data)
 	{
 		if ( ((StoredEnchant)data).enchants.size() != enchants.size() ) return false;
 		
@@ -114,6 +114,6 @@ public class StoredEnchant extends ItemAttribute {
 	@Override
 	public boolean similar(ItemAttribute data)
 	{
-		return equals(data);
+		return same(data);
 	}
 }

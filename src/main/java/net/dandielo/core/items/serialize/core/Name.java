@@ -63,11 +63,11 @@ public class Name extends ItemAttribute {
 	@Override
 	public boolean similar(ItemAttribute attr)
 	{			
-		return equals(attr);
+		return same(attr);
 	}
 	
 	@Override
-	public boolean equals(ItemAttribute attr)
+	public boolean same(ItemAttribute attr)
 	{
 		return name.equals(((Name)attr).name);//item.hasFlag(Regex.class) ? extendedCheck(attr) : name.equals(((Name)attr).name);
 	}

@@ -83,7 +83,7 @@ public class Potion extends ItemAttribute {
 	}
 
 	@Override
-	public boolean equals(ItemAttribute attr)
+	public boolean same(ItemAttribute attr)
 	{
 		if ( ((Potion)attr).effects.size() != effects.size() ) return false;
 		
@@ -97,6 +97,6 @@ public class Potion extends ItemAttribute {
 	@Override
 	public boolean similar(ItemAttribute attr)
 	{
-		return equals(attr);
+		return same(attr);
 	}
 }

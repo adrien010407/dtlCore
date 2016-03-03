@@ -184,7 +184,7 @@ public class Firework extends ItemAttribute {
 	}
 
 	@Override
-	public boolean equals(ItemAttribute that)
+	public boolean same(ItemAttribute that)
 	{
 		if ( this.effects.size() != ((Firework)that).effects.size() ) return false;
 		
@@ -200,6 +200,6 @@ public class Firework extends ItemAttribute {
 	@Override
 	public boolean similar(ItemAttribute that)
 	{
-		return equals(that);
+		return same(that);
 	}
 }

@@ -66,7 +66,7 @@ public class LeatherColor extends ItemAttribute {
 	}
 	
 	@Override
-	public boolean equals(ItemAttribute data)
+	public boolean same(ItemAttribute data)
 	{
 		return ((LeatherColor)data).color.equals(color);
 	}
@@ -74,7 +74,7 @@ public class LeatherColor extends ItemAttribute {
 	@Override
 	public boolean similar(ItemAttribute data)
 	{
-		return equals(data);
+		return same(data);
 	}
 
 	/**

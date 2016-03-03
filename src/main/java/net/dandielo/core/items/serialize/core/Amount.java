@@ -83,7 +83,7 @@ public class Amount extends ItemAttribute {
 		item.setAmount(amounts.get(0));
 	}
 	
-	public boolean equals(ItemAttribute that) {
+	public boolean same(ItemAttribute that) {
 		return (that == null ? false : ((Amount)that).getAmount() == this.getAmount());
 	}
 	

@@ -78,7 +78,7 @@ public class Durability extends ItemAttribute {
 	}
 	
 	@Override
-	public boolean equals(ItemAttribute attr)
+	public boolean same(ItemAttribute attr)
 	{
 		return durability == ((Durability)attr).durability;
 	}

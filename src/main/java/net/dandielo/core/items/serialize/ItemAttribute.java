@@ -132,10 +132,10 @@ public abstract class ItemAttribute {
 	 * @return
 	 *   <b>true</b> if equal.
 	 */
-	public boolean equals(ItemAttribute that) {
+	public boolean same(ItemAttribute that) {
 		return key.equals(that.key);
 	}
-	
+
 	/**
 	 * Checks if both attributes are similar. 
 	 * <p>Allows for smooth differences in the attributes values.</p> 
@@ -145,8 +145,10 @@ public abstract class ItemAttribute {
 	 *   <b>true</b> if similar.
 	 */
 	public boolean similar(ItemAttribute that) {
-		return equals(that);
+		return same(that);
 	}
+	
+	
 	
 	/**
 	 * Unlike the two other comparisons this one is strictly implemented to allow only one object of this key-subkey pairs in a 

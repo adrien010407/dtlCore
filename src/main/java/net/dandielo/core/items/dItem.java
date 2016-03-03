@@ -679,6 +679,7 @@ public class dItem {
 	@Override
 	public boolean equals(Object that) { return that instanceof dItem && equals((dItem)that); }
 	
+	
 	/**
 	 * Strict comparing, all values need to be equal. 
 	 * @param that
@@ -687,9 +688,13 @@ public class dItem {
 	 *   <b>true</> if both items are equal.
 	 */
 	public boolean equals(dItem that) { 
-		boolean equals = material.equals(that.getMaterial());
+		// Metadata muss match to allow continuation
+		boolean equals = true;		
 		
+		equals = material.equals(that.getMaterial());
 		equals &= material.getMaxDurability() == 0 ? materialData.equals(that.materialData) : true;  
+
+		equals = equals ? isMetadataMatching(that) : equals;
 		
 		if (equals)
 		{
@@ -701,7 +706,7 @@ public class dItem {
 					for (ItemAttribute thatItemAttr : that.attributes)
 					{
 						if (itemAttr.getClass().equals(thatItemAttr.getClass()))
-							equals &= itemAttr.equals(thatItemAttr);
+							equals &= itemAttr.same(thatItemAttr);
 					}
 				}
 			}
@@ -729,9 +734,13 @@ public class dItem {
 	 *   <b>true</> if both items are equal.
 	 */
 	public boolean similar(dItem that) {
-		boolean equals = material.equals(that.getMaterial());
+		// Metadata muss match to allow continuation
+		boolean equals = true;
+		
+		equals = material.equals(that.getMaterial());
+		equals &= material.getMaxDurability() == 0 ? materialData.equals(that.materialData) : true;
 
-		equals &= material.getMaxDurability() == 0 ? materialData.equals(that.materialData) : true;  
+		equals = equals ? isMetadataMatching(that) : equals;
 		
 		if (equals)
 		{
@@ -795,7 +804,7 @@ public class dItem {
 			{
 				for (ItemAttribute thatItemAttr : that.attributes)
 				{
-					if (thisItemAttr.getClass().equals(thatItemAttr.getClass()) && thisItemAttr.equals(thatItemAttr))
+					if (thisItemAttr.getClass().equals(thatItemAttr.getClass()) && thisItemAttr.same(thatItemAttr))
 						priority += thisItemAttr.getInfo().priority();
 				}
 			}
@@ -832,6 +841,33 @@ public class dItem {
 	    hash = 73 * hash + (this.flags != null ? this.flags.hashCode() : 0);
 	    
 	    return hash;
+	}
+	
+	
+	// Utils
+	private boolean isMetadataMatching(dItem item)
+	{
+		return (checkAttributesMatching(item) && checkFlagsMatching(item));
+	}
+	
+	private boolean checkAttributesMatching(dItem item)
+	{;
+		boolean containsAll = true;
+		for ( ItemAttribute key : item.attributes )
+			containsAll = containsAll && !key.getInfo().standalone() ? this.attributes.contains(key) : containsAll;
+		for ( ItemAttribute key : this.attributes)
+			containsAll = containsAll && !key.getInfo().standalone() ? item.attributes.contains(key) : containsAll;
+		return containsAll;
+	}
+	
+	private boolean checkFlagsMatching(dItem item)
+	{
+		boolean containsAll = true;
+		for ( ItemFlag key : item.flags )
+			containsAll = containsAll && !key.getInfo().standalone() ? this.flags.contains(key) : containsAll;
+		for ( ItemFlag key : this.flags )
+			containsAll = containsAll && !key.getInfo().standalone() ? item.flags.contains(key) : containsAll;
+		return containsAll;
 	}
 }
 
