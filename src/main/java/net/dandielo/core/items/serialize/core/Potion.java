@@ -42,11 +42,11 @@ public class Potion extends ItemAttribute {
 	@Override
 	public String serialize()
 	{
-		String result = "";
+		String result = ",";
 		
 		//save each potion effect with a comma separated
 		for ( PotionEffect e : effects )
-			result += "," + e.getType().getName() + "/" + e.getDuration() + "/" + e.getAmplifier() + "/" + e.isAmbient();
+			result += e.getType().getName() + "/" + e.getDuration() + "/" + e.getAmplifier() + "/" + e.isAmbient();
 		
 		return result.substring(1);
 	}
@@ -58,11 +58,14 @@ public class Potion extends ItemAttribute {
 
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		
-		for ( PotionEffect effect : effects )
-		    meta.addCustomEffect(effect, false);
-		
-		//set the main effect
-		meta.setMainEffect(effects.get(0).getType());
+		if (!effects.isEmpty())
+		{
+			for ( PotionEffect effect : effects )
+			    meta.addCustomEffect(effect, false);
+			
+			//set the main effect
+			meta.setMainEffect(effects.get(0).getType());
+		}
 		
 		item.setItemMeta(meta);
 	}
