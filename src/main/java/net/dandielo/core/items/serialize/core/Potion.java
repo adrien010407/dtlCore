@@ -15,7 +15,7 @@ import net.dandielo.core.items.dItem;
 import net.dandielo.core.items.serialize.Attribute;
 import net.dandielo.core.items.serialize.ItemAttribute;
 
-@Attribute(name="Potion", key="pt", priority = 5, items = {Material.POTION, Material.SPLASH_POTION, Material.LINGERING_POTION})
+@Attribute(name="Potion", key="pt", priority = 5, items = {Material.POTION, Material.SPLASH_POTION, Material.TIPPED_ARROW, Material.LINGERING_POTION})
 public class Potion extends ItemAttribute {
 	private List<PotionEffect> effects = new ArrayList<PotionEffect>();
 	private boolean extended;
@@ -85,7 +85,7 @@ public class Potion extends ItemAttribute {
 	public void onAssign(ItemStack item, boolean unused)
 	{
 		if ( !(item.getType().equals(Material.POTION) || item.getType().equals(Material.SPLASH_POTION) || 
-				item.getType().equals(Material.LINGERING_POTION)) ) return;
+				item.getType().equals(Material.LINGERING_POTION) || item.getType().equals(Material.TIPPED_ARROW)) ) return;
 
 		PotionMeta meta = (PotionMeta) item.getItemMeta();
 		if (!effects.isEmpty())
@@ -103,7 +103,7 @@ public class Potion extends ItemAttribute {
 	public boolean onRefactor(ItemStack item)
 	{
 		if ( !(item.getType().equals(Material.POTION) || item.getType().equals(Material.SPLASH_POTION) || 
-				item.getType().equals(Material.LINGERING_POTION)) ) 
+				item.getType().equals(Material.LINGERING_POTION) || item.getType().equals(Material.TIPPED_ARROW)) ) 
 			return false;
 		
 		PotionMeta meta = (PotionMeta) item.getItemMeta(); 
