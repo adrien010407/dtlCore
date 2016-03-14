@@ -8,7 +8,7 @@ import net.dandielo.core.items.dItem;
 import net.dandielo.core.items.serialize.Attribute;
 import net.dandielo.core.items.serialize.ItemFlag;
 
-@Attribute(name="SplashPotion", key = ".splash", items = {Material.POTION}, priority = 5)
+@Attribute(name="SplashPotion", key = ".splash", items = { }, priority = 5)
 public class SplashPotion extends ItemFlag {
 
 	public SplashPotion(dItem item, String key)
@@ -19,7 +19,7 @@ public class SplashPotion extends ItemFlag {
 	@Override
 	public void onAssign(ItemStack item, boolean unused)
 	{
-		if (!item.getType().equals(Material.POTION)) return;
+		if (!item.getType().equals(Material.SPLASH_POTION)) return;
 		
 		//set the potion as splash potion
 		//bit representation 
@@ -36,26 +36,29 @@ public class SplashPotion extends ItemFlag {
 		// 0 1 0 0 | 0 0 0 0 | 0 0 0 0 | 0 0 0 0
 		//
 		//splash potion ready :)
-		item.setDurability((short) ((item.getDurability()&0x1fff)|0x4000));
+		
+		// Not used anymore in 1.9
+		// item.setDurability((short) ((item.getDurability()&0x1fff)|0x4000));
 	}
 	
 	@Override
 	public boolean onRefactor(ItemStack item) 
 	{
-		if (!item.getType().equals(Material.POTION))
-			return false;
-		
-		//get the potion and check if it's a splash potion
-		try
-		{
-		    Potion potion = Potion.fromItemStack(item);
-		    if ( !potion.isSplash() )
-				return false;
-		}
-		catch ( Exception e )
-		{
-			return false;
-		}
-		return true;
+		return false; // Only here for save issues and automatically backward compatibility of saves (1.8.8 => 1.9)
+//		if (!item.getType().equals(Material.POTION))
+//			return false;
+//		
+//		//get the potion and check if it's a splash potion
+//		try
+//		{
+//		    Potion potion = Potion.fromItemStack(item);
+//		    if ( !potion.isSplash() )
+//				return false;
+//		}
+//		catch ( Exception e )
+//		{
+//			return false;
+//		}
+//		return true;
 	}
 }
