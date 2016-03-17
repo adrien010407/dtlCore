@@ -18,6 +18,7 @@ import net.dandielo.core.items.serialize.core.Name;
 import net.dandielo.core.items.serialize.core.Potion;
 import net.dandielo.core.items.serialize.core.Shield;
 import net.dandielo.core.items.serialize.core.Skull;
+import net.dandielo.core.items.serialize.core.SpawnEgg;
 import net.dandielo.core.items.serialize.core.StoredEnchant;
 import net.dandielo.core.items.serialize.flags.Lore;
 import net.dandielo.core.items.serialize.flags.SplashPotion;
@@ -62,6 +63,7 @@ public class dtlCore extends JavaPlugin {
 			registerAttr(Durability.class);
 			registerAttr(HideFlags.class);
 			registerAttr(Enchants.class);
+			registerAttr(SpawnEgg.class);
 			registerAttr(Firework.class);
 			registerAttr(Amount.class);
 			registerAttr(Banner.class);
