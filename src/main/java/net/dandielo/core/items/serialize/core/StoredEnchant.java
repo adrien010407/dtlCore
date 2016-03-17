@@ -32,8 +32,8 @@ public class StoredEnchant extends ItemAttribute {
 			
 			//get the enchant by name or id
 			Enchantment ench = Enchantment.getByName( enchData[0].toUpperCase() );
-			if ( ench == null )
-				ench = Enchantment.getById( Integer.parseInt(enchData[0]));
+			if (ench == null) 
+				return false;
 			
 			try
 			{
@@ -43,7 +43,6 @@ public class StoredEnchant extends ItemAttribute {
 			catch(NumberFormatException e)
 			{
 				return false;
-//TODO: Exceptions				throw new AttributeInvalidValueException(getInfo(), data);
 			}
 		}
 		return true;
