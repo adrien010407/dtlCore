@@ -11,29 +11,34 @@ public class Durability extends ItemAttribute {
 	private double durabilityPercent; 
 	private short durability;
 
-	public Durability(dItem item, String key) {
+	public Durability(dItem item, String key)
+	{
 		super(item, key);
 		durabilityPercent = -1;
 		durability = 0;
 	}
 	
-	public short getValue() {
+	public short getValue() 
+	{
 		return durability;
 	}
 	
-	public double getPercent() {
+	public double getPercent() 
+	{
 		return durabilityPercent;
 	}
 
 	@Override
-	public String serialize() {
+	public String serialize()
+	{
 		if (durabilityPercent >= 0)
 			return String.format("%.0f%%", durabilityPercent * 100);
 		return String.valueOf(durability);
 	}
 
 	@Override
-	public boolean deserialize(String data) {
+	public boolean deserialize(String data) 
+	{
 		try
 		{
 			if (data.endsWith("%"))
@@ -54,17 +59,17 @@ public class Durability extends ItemAttribute {
 	}
 	
 	@Override
-	public void onAssign(ItemStack item, boolean unused) {
+	public void onAssign(ItemStack item, boolean unused) 
+	{
 		if (item.getType().getMaxDurability() > 0)
 		{
-			if (durabilityPercent > 0) 
-				durability = (short) (item.getType().getMaxDurability() * ((double)durabilityPercent / 100.0)); 
 			item.setDurability(durability);
 		}
 	}
 	
 	@Override
-	public boolean onRefactor(ItemStack item) {
+	public boolean onRefactor(ItemStack item) 
+	{
 		if (item.getType().getMaxDurability() == 0) return false;
 			
 		durability = item.getDurability();
