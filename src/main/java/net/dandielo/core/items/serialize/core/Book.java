@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.BookMeta;
 import net.dandielo.core.items.dItem;
 import net.dandielo.core.items.serialize.Attribute;
 import net.dandielo.core.items.serialize.ItemAttribute;
+import net.dandielo.core.utils.NBTItemStack;
 
 @Attribute(key="bk", name="Book", priority = 45, items = {Material.BOOK_AND_QUILL, Material.WRITTEN_BOOK})
 public class Book extends ItemAttribute {
@@ -24,6 +25,7 @@ public class Book extends ItemAttribute {
 	//for WrittenBook
 	private String author;
 	private String title;
+	private int generation;
 	
 	//for each book item
 	private List<String> pages;
@@ -35,6 +37,7 @@ public class Book extends ItemAttribute {
 		//set defaults
 		author = null;
 		title = null;
+		generation = 0;
 		
 		//empty pages list
 		pages = new ArrayList<String>();
@@ -49,6 +52,7 @@ public class Book extends ItemAttribute {
 		//load the book from file
 		author = books.getString(bookId + ".author");
 		title = books.getString(bookId + ".title");
+		generation = books.getInt(bookId + ".generation");
 		pages.addAll(books.getStringList(bookId + ".pages"));
 		return true;
 	}
@@ -60,6 +64,7 @@ public class Book extends ItemAttribute {
 		books.set(bookId + ".author", author);
 		books.set(bookId + ".title", title);
 		books.set(bookId + ".pages", pages);
+		books.set(bookId + ".generation", generation);
 		
 		//save the file
 		save();
@@ -69,9 +74,9 @@ public class Book extends ItemAttribute {
 	}
 
 	@Override
-	public void onAssign(ItemStack item, boolean unused) 
+	public ItemStack onNativeAssign(ItemStack item, boolean unused) 
 	{
-		if ( !(item.getItemMeta() instanceof BookMeta) ) return;
+		if ( !(item.getItemMeta() instanceof BookMeta) ) return item;
 		BookMeta book = (BookMeta) item.getItemMeta();
 		
 		//for written books set the title and author
@@ -81,11 +86,14 @@ public class Book extends ItemAttribute {
 			book.setTitle(title);
 		}
 		
-		//set all pages
+		// set all pages and the item meta
 		book.setPages(pages);
-		
-		//set the meta
 		item.setItemMeta(book);
+		
+		// set the book generation and return the new item
+		NBTItemStack helper = new NBTItemStack(item);
+		helper.setInt("generation", generation);
+		return helper.getItemStack();
 	}
 
 	@Override
@@ -99,6 +107,10 @@ public class Book extends ItemAttribute {
 		//get title and author
 		author = book.getAuthor();
 		title = book.getTitle();
+		
+		// Get the books generation
+		NBTItemStack helper = new NBTItemStack(item);
+		generation = helper.getInt("generation");
 		
 		//get pages
 		pages.addAll(book.getPages());
@@ -182,10 +194,12 @@ public class Book extends ItemAttribute {
 		if (!(thato instanceof Book)) return false;
 		Book that = (Book) thato;
 		
+
 		boolean result = true;
 		//check author and title
 		result &= author == null ? that.author == null : author.equals(that.author);
 		result &= title == null ? that.title == null : title.equals(that.title);
+		result &= generation == that.generation;
 		
 		//check each page
 		result &= pages.size() == that.pages.size();
