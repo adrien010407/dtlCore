@@ -27,7 +27,7 @@ public class Durability extends ItemAttribute {
 
 	@Override
 	public String serialize() {
-		if (durabilityPercent >= -1)
+		if (durabilityPercent >= 0)
 			return String.format("%.0f%%", durabilityPercent * 100);
 		return String.valueOf(durability);
 	}
@@ -39,7 +39,7 @@ public class Durability extends ItemAttribute {
 			if (data.endsWith("%"))
 			{
 				durabilityPercent = Integer.parseInt(data.substring(0, data.length() - 1)) / 100.0;
-				durability = (short) (item.getItem(false).getType().getMaxDurability() * durabilityPercent);
+				durability = (short) (item.getMaterial().getMaxDurability() * durabilityPercent);
 			}
 			else
 			{
@@ -57,7 +57,7 @@ public class Durability extends ItemAttribute {
 	public void onAssign(ItemStack item, boolean unused) {
 		if (item.getType().getMaxDurability() > 0)
 		{
-			if (durabilityPercent > -1) 
+			if (durabilityPercent > 0) 
 				durability = (short) (item.getType().getMaxDurability() * ((double)durabilityPercent / 100.0)); 
 			item.setDurability(durability);
 		}
