@@ -780,11 +780,12 @@ public class dItem {
 		{
 			if (!material.equals(Material.AIR))
 			{
-				priority += materialData.equals(that.materialData) ? 130 : -2;
+				priority += material.equals(that.material) ? 100 : 0;
+				priority += materialData.equals(that.materialData) ? 130 : 0;
 			}
 			else 
 			{
-				priority += this.getDurability() == that.getDurability() ? 120 : -2;
+				priority += this.getDurability() == that.getDurability() ? 120 : 0;
 			}
 		}
 		else
