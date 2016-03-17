@@ -22,6 +22,7 @@ public class StoredEnchant extends ItemAttribute {
 	}
 
 	@Override
+	@SuppressWarnings({"deprecation"})
 	public boolean deserialize(String data) 
 	{
 		//split all enchants into name/id
@@ -32,8 +33,8 @@ public class StoredEnchant extends ItemAttribute {
 			
 			//get the enchant by name or id
 			Enchantment ench = Enchantment.getByName( enchData[0].toUpperCase() );
-			if (ench == null) 
-				return false;
+			if ( ench == null )
+				ench = Enchantment.getById( Integer.parseInt(enchData[0]) );
 			
 			try
 			{
