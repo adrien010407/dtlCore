@@ -36,7 +36,8 @@ public class Banner extends ItemAttribute {
 	// red.green.blue
 	//
 	@Override
-	public String serialize() {
+	public String serialize() 
+	{
 		String result = "unused";
 		for (Pattern pattern : patterns)
 		{
@@ -48,7 +49,8 @@ public class Banner extends ItemAttribute {
 	}
 
 	@Override
-	public boolean deserialize(String data) {
+	public boolean deserialize(String data)
+	{
 		String[] arrayData = data.split(",");
 		for (String strPattern : arrayData)
 		{
@@ -72,8 +74,8 @@ public class Banner extends ItemAttribute {
 	}
 	
 	@Override
-	public boolean onRefactor(ItemStack item) {
-		//check the item meta
+	public boolean onRefactor(ItemStack item) 
+	{
 		if ( !(item.getItemMeta() instanceof BannerMeta) ) return false;
 		
 		//check is a owner is set
@@ -83,7 +85,8 @@ public class Banner extends ItemAttribute {
 	}
 	
 	@Override
-	public void onAssign(ItemStack item, boolean unused) {
+	public void onAssign(ItemStack item, boolean unused) 
+	{
 		if (item.getItemMeta() instanceof BannerMeta)
 		{
 			BannerMeta meta = (BannerMeta) item.getItemMeta();

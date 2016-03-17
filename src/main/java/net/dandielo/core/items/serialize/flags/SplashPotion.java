@@ -2,7 +2,6 @@ package net.dandielo.core.items.serialize.flags;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.Potion;
 
 import net.dandielo.core.items.dItem;
 import net.dandielo.core.items.serialize.Attribute;
