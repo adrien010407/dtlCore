@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.bukkit.inventory.ItemStack;
 
-import net.minecraft.server.v1_8_R3.NBTTagCompound;
-import net.minecraft.server.v1_8_R3.NBTTagList;
+import net.minecraft.server.v1_9_R1.NBTTagCompound;
+import net.minecraft.server.v1_9_R1.NBTTagList;
 
 
 public class NBTItemStack extends NBTReader {

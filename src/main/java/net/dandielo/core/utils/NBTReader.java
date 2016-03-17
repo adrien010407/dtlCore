@@ -1,14 +1,14 @@
 package net.dandielo.core.utils;
 
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
-import net.minecraft.server.v1_8_R3.NBTBase;
-import net.minecraft.server.v1_8_R3.NBTTagCompound;
-import net.minecraft.server.v1_8_R3.NBTTagList;
-import net.minecraft.server.v1_8_R3.NBTTagString;
+import net.minecraft.server.v1_9_R1.NBTBase;
+import net.minecraft.server.v1_9_R1.NBTTagCompound;
+import net.minecraft.server.v1_9_R1.NBTTagList;
+import net.minecraft.server.v1_9_R1.NBTTagString;
 
 
 public class NBTReader {
@@ -75,15 +75,20 @@ public class NBTReader {
 		return (Entity) object;
 	}
 	
-	// Helper methods
-	protected net.minecraft.server.v1_8_R3.ItemStack asNativeItemStack()
+	public NBTTagCompound asCompoundTag() 
 	{
-		return object instanceof net.minecraft.server.v1_8_R3.ItemStack ? (net.minecraft.server.v1_8_R3.ItemStack) object : null;
+		return objectType == ObjectType.NBTTag ? (NBTTagCompound) object : null;
 	}
 	
-	protected net.minecraft.server.v1_8_R3.Entity asNativeEntity()
+	// Helper methods
+	protected net.minecraft.server.v1_9_R1.ItemStack asNativeItemStack()
 	{
-		return object instanceof net.minecraft.server.v1_8_R3.Entity ? (net.minecraft.server.v1_8_R3.Entity) object : null;
+		return object instanceof net.minecraft.server.v1_9_R1.ItemStack ? (net.minecraft.server.v1_9_R1.ItemStack) object : null;
+	}
+	
+	protected net.minecraft.server.v1_9_R1.Entity asNativeEntity()
+	{
+		return object instanceof net.minecraft.server.v1_9_R1.Entity ? (net.minecraft.server.v1_9_R1.Entity) object : null;
 	}
 	
 	protected NBTTagCompound asNBTTagCompound()
@@ -93,8 +98,8 @@ public class NBTReader {
 			result = (NBTTagCompound) object;
 		if (objectType == ObjectType.Item)
 			result = asNativeItemStack().getTag();
-		if (objectType == ObjectType.Entity)
-			result = asNativeEntity().getNBTTag();
+//		if (objectType == ObjectType.Entity) todo fix this in 1.9
+//			result = asNativeEntity().getNBTTag();
 		return result;
 	}
 	
@@ -230,6 +235,11 @@ public class NBTReader {
 		asNBTTagList().add(new NBTTagString(value));
 	}
 	
+	public void addTag(NBTBase base)
+	{
+		asNBTTagList().add(base);
+	}
+	
 	public NBTReader getReaderAt(int index)
 	{
 		if (objectType == ObjectType.NBTList)
@@ -277,7 +287,7 @@ public class NBTReader {
 	
 	public static ItemStack setString(ItemStack item, String key, String value)
 	{
-		net.minecraft.server.v1_8_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+		net.minecraft.server.v1_9_R1.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
 		
 		NBTTagCompound tag = nmsItem.getTag();
 		if (tag == null)
@@ -305,7 +315,7 @@ public class NBTReader {
 	
 	public static String getString(ItemStack item, String key)
 	{
-		net.minecraft.server.v1_8_R3.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+		net.minecraft.server.v1_9_R1.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
 
 		NBTTagCompound tag = nmsItem.getTag();
 		if (tag == null) return null;
