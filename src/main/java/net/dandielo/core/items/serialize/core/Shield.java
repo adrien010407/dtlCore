@@ -15,8 +15,8 @@ import net.dandielo.core.items.serialize.ItemAttribute;
 import net.dandielo.core.utils.NBTItemStack;
 import net.dandielo.core.utils.NBTReader;
 import net.dandielo.core.utils.NBTReader.NBTTagType;
-import net.minecraft.server.v1_9_R1.NBTTagCompound;
-import net.minecraft.server.v1_9_R1.NBTTagList;
+import net.minecraft.server.v1_10_R1.NBTTagCompound;
+import net.minecraft.server.v1_10_R1.NBTTagList;
 
 @Attribute(name = "Shield", key = "sh", priority = 5, items = {Material.SHIELD})
 public class Shield extends ItemAttribute {

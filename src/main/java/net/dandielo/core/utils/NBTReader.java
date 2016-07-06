@@ -1,14 +1,14 @@
 package net.dandielo.core.utils;
 
-import org.bukkit.craftbukkit.v1_9_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 
-import net.minecraft.server.v1_9_R1.NBTBase;
-import net.minecraft.server.v1_9_R1.NBTTagCompound;
-import net.minecraft.server.v1_9_R1.NBTTagList;
-import net.minecraft.server.v1_9_R1.NBTTagString;
+import net.minecraft.server.v1_10_R1.NBTBase;
+import net.minecraft.server.v1_10_R1.NBTTagCompound;
+import net.minecraft.server.v1_10_R1.NBTTagList;
+import net.minecraft.server.v1_10_R1.NBTTagString;
 
 
 public class NBTReader {
@@ -81,14 +81,14 @@ public class NBTReader {
 	}
 	
 	// Helper methods
-	protected net.minecraft.server.v1_9_R1.ItemStack asNativeItemStack()
+	protected net.minecraft.server.v1_10_R1.ItemStack asNativeItemStack()
 	{
-		return object instanceof net.minecraft.server.v1_9_R1.ItemStack ? (net.minecraft.server.v1_9_R1.ItemStack) object : null;
+		return object instanceof net.minecraft.server.v1_10_R1.ItemStack ? (net.minecraft.server.v1_10_R1.ItemStack) object : null;
 	}
 	
-	protected net.minecraft.server.v1_9_R1.Entity asNativeEntity()
+	protected net.minecraft.server.v1_10_R1.Entity asNativeEntity()
 	{
-		return object instanceof net.minecraft.server.v1_9_R1.Entity ? (net.minecraft.server.v1_9_R1.Entity) object : null;
+		return object instanceof net.minecraft.server.v1_10_R1.Entity ? (net.minecraft.server.v1_10_R1.Entity) object : null;
 	}
 	
 	protected NBTTagCompound asNBTTagCompound()
@@ -287,7 +287,7 @@ public class NBTReader {
 	
 	public static ItemStack setString(ItemStack item, String key, String value)
 	{
-		net.minecraft.server.v1_9_R1.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+		net.minecraft.server.v1_10_R1.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
 		
 		NBTTagCompound tag = nmsItem.getTag();
 		if (tag == null)
@@ -315,7 +315,7 @@ public class NBTReader {
 	
 	public static String getString(ItemStack item, String key)
 	{
-		net.minecraft.server.v1_9_R1.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
+		net.minecraft.server.v1_10_R1.ItemStack nmsItem = CraftItemStack.asNMSCopy(item);
 
 		NBTTagCompound tag = nmsItem.getTag();
 		if (tag == null) return null;

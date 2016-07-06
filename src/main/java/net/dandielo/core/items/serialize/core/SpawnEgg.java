@@ -12,7 +12,7 @@ import net.dandielo.core.items.serialize.Attribute;
 import net.dandielo.core.items.serialize.ItemAttribute;
 import net.dandielo.core.utils.NBTItemStack;
 import net.dandielo.core.utils.NBTReader;
-import net.minecraft.server.v1_9_R1.NBTTagCompound;
+import net.minecraft.server.v1_10_R1.NBTTagCompound;
 
 @Attribute(name = "Spawn egg", key = "egg", priority = 5, items = { Material.MONSTER_EGG })
 public class SpawnEgg extends ItemAttribute {
